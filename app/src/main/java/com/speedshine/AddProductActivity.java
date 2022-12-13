@@ -557,7 +557,7 @@ public class AddProductActivity extends  AppCompatActivity  {
 					tbSpecs.setText(productsInfoMap.get("specs").toString());
 					tbStock.setText(productsInfoMap.get("stock").toString());
 					uploadThumbnailUrl = productsInfoMap.get("thumbnail").toString();
-					//Glide.with(getApplicationContext()).load(Uri.parse(productsInfoMap.get("thumbnail").toString())).into(thumbnail_img);
+					Glide.with(getApplicationContext()).load(Uri.parse(productsInfoMap.get("thumbnail").toString())).into(thumbnail_img);
 					galleryMapList = new Gson().fromJson(productsInfoMap.get("gallery").toString(), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
 					_imageGalleryCount();
 					_refreshListofGallery();
@@ -794,7 +794,7 @@ public class AddProductActivity extends  AppCompatActivity  {
 			
 			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			_view.setLayoutParams(_lp);
-			//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("image_path").toString())).into(imageview1);
+			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("image_path").toString())).into(imageview1);
 			gallery_preview_box.setElevation((float)5);
 			android.graphics.drawable.GradientDrawable gallery_preview_box_design = new android.graphics.drawable.GradientDrawable();
 			gallery_preview_box_design.setColor(0xFFFFFFFF);
