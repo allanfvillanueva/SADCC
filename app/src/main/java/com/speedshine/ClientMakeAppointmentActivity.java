@@ -399,7 +399,8 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 		_design();
 		pd = new ProgressDialog(ClientMakeAppointmentActivity.this);
 		newAppointment = false;
-		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
 		SelectedItemString = getIntent().getStringExtra("selected_item");
 		selectedItemListMap = new Gson().fromJson(SelectedItemString, new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
 		_GetTotalItemSelected();
@@ -671,7 +672,7 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 			boxStatus.setVisibility(View.GONE);
 			realBoxControl.setVisibility(View.GONE);
 			// Bind
-			//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(thumbnail);
+			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(thumbnail);
 			unit.setText(_data.get((int)_position).get("unit").toString().toUpperCase());
 			brand.setText(_data.get((int)_position).get("brand").toString().toUpperCase());
 			qty.setText(_data.get((int)_position).get("quantity").toString().toUpperCase());

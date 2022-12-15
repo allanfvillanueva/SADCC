@@ -173,7 +173,7 @@ public class ViewAssetsActivity extends  AppCompatActivity  {
 	private void initializeLogic() {
 		_design();
 		image_view_str = getIntent().getStringExtra("picture_url");
-		//Glide.with(getApplicationContext()).load(Uri.parse(image_view_str)).into(viewasset);
+		Glide.with(getApplicationContext()).load(Uri.parse(image_view_str)).into(viewasset);
 		btnDownload.setVisibility(View.GONE);
 	}
 	

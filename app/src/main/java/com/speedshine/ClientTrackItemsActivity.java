@@ -297,7 +297,8 @@ public class ClientTrackItemsActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		_design();
-		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
 		appdb = _firebase.getReference("appointments/" + userid);
 		_childEventListener();
 		_loadFirebase();
@@ -561,4 +562,4 @@ public class ClientTrackItemsActivity extends  AppCompatActivity  {
 		return getResources().getDisplayMetrics().heightPixels;
 	}
 	
-}
+}

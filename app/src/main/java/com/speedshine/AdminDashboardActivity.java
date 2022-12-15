@@ -158,8 +158,9 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.admin_dashboard);
 		initialize(_savedInstanceState);
-		com.google.firebase.FirebaseApp.initializeApp(this);
-		initializeLogic();
+		//com.google.firebase.FirebaseApp.initializeApp(this);
+		//initializeLogic();
+		bypassLogic();
 	}
 	
 	private void initialize(Bundle _savedInstanceState) {
@@ -572,6 +573,16 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 			}
 		};
 	}
+
+	private void bypassLogic() {
+		_design();
+		_loadData();
+		_loadAnalytics();
+		_getAllNoReplyMessages();
+		_getAllNotifications();
+		GoogleSignInOptions gop = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().requestProfile().requestIdToken("1090849595737-8p185b3f3pru1oc1c68tlqp6so2r027v.apps.googleusercontent.com").build();
+		fgl = GoogleSignIn.getClient(this,gop);
+	}
 	
 	private void initializeLogic() {
 		_design();
@@ -657,19 +668,34 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 	
 	public void _loadData () {
 		fb.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot _dataSnapshot) {
-						getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+			@Override
+			public void onDataChange(DataSnapshot _dataSnapshot) {
+				getAccountId = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
 				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				_drawer_name.setText(AccountInfoMap.get("lname").toString().concat(" , ").concat(AccountInfoMap.get("fname").toString().concat(" ").concat(AccountInfoMap.get("mname").toString())));
 				if (AccountInfoMap.containsKey("avatar")) {
-					//Glide.with(getApplicationContext()).load(Uri.parse(AccountInfoMap.get("avatar").toString())).into(_drawer_profile_picture);
+					Glide.with(getApplicationContext()).load(Uri.parse(AccountInfoMap.get("avatar").toString())).into(_drawer_profile_picture);
 				}
-				}
-				@Override
-				public void onCancelled(DatabaseError _databaseError) {
-				}
+			}
+			@Override
+			public void onCancelled(DatabaseError _databaseError) {
+			}
 		});
+
+//		fb.addListenerForSingleValueEvent(new ValueEventListener() {
+//				@Override
+//				public void onDataChange(DataSnapshot _dataSnapshot) {
+//						getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
+//				_drawer_name.setText(AccountInfoMap.get("lname").toString().concat(" , ").concat(AccountInfoMap.get("fname").toString().concat(" ").concat(AccountInfoMap.get("mname").toString())));
+//				if (AccountInfoMap.containsKey("avatar")) {
+//					Glide.with(getApplicationContext()).load(Uri.parse(AccountInfoMap.get("avatar").toString())).into(_drawer_profile_picture);
+//				}
+//				}
+//				@Override
+//				public void onCancelled(DatabaseError _databaseError) {
+//				}
+//		});
 	}
 	
 	

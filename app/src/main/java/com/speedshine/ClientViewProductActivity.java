@@ -1332,7 +1332,7 @@ public class ClientViewProductActivity extends  AppCompatActivity  {
 			final LinearLayout linear1 = (LinearLayout) _view.findViewById(R.id.linear1);
 			final ImageView imageview1 = (ImageView) _view.findViewById(R.id.imageview1);
 			
-			//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("image_path").toString())).into(imageview1);
+			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("image_path").toString())).into(imageview1);
 		}
 		
 		@Override

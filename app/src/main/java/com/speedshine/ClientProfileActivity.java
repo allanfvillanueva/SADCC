@@ -373,7 +373,7 @@ public class ClientProfileActivity extends  AppCompatActivity  {
 				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				name.setText(AccountInfoMap.get("lname").toString().concat(" , ").concat(AccountInfoMap.get("fname").toString().concat(" ").concat(AccountInfoMap.get("mname").toString())));
 				if (AccountInfoMap.containsKey("avatar")) {
-					//Glide.with(getApplicationContext()).load(Uri.parse(AccountInfoMap.get("avatar").toString())).into(profile_picture);
+					Glide.with(getApplicationContext()).load(Uri.parse(AccountInfoMap.get("avatar").toString())).into(profile_picture);
 				}
 				}
 				@Override

@@ -354,7 +354,8 @@ public class ClientViewCartActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		_design();
-		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
 		cartdb = _firebase.getReference("carts/" + userid);
 		_loadFirebase();
 	}
@@ -637,7 +638,7 @@ public class ClientViewCartActivity extends  AppCompatActivity  {
 			android.graphics.drawable.RippleDrawable btnDiminishQty_re = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ 0xFFFCE4EC }), btnDiminishQty_design, null);
 			btnDiminishQty.setBackground(btnDiminishQty_re);
 			// Bind
-			//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(thumbnail);
+			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(thumbnail);
 			unit.setText(_data.get((int)_position).get("unit").toString().toUpperCase());
 			brand.setText(_data.get((int)_position).get("brand").toString().toUpperCase());
 			qty.setText(_data.get((int)_position).get("quantity").toString().toUpperCase());

@@ -340,7 +340,8 @@ public class NotificationsActivity extends  AppCompatActivity  {
 		dbaccount.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot _dataSnapshot) {
-						getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+					//getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+					getAccountId = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
 				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				if (AccountInfoMap.containsKey("account_type")) {
 					if (AccountInfoMap.get("account_type").toString().equals("3")) {
@@ -555,4 +556,4 @@ public class NotificationsActivity extends  AppCompatActivity  {
 		return getResources().getDisplayMetrics().heightPixels;
 	}
 	
-}
+}

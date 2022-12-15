@@ -369,7 +369,7 @@ public class ManageProductsActivity extends  AppCompatActivity  {
 			android.graphics.drawable.RippleDrawable box_re = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ 0xFFFCE4EC }), box_design, null);
 			box.setBackground(box_re);
 			// Bind
-			//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(circleimageview1);
+			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(circleimageview1);
 			brand.setText(_data.get((int)_position).get("brand").toString());
 			unit.setText(_data.get((int)_position).get("unit").toString());
 			stock_count.setText(_data.get((int)_position).get("stock").toString());

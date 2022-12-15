@@ -494,7 +494,7 @@ public class ManageAccountsActivity extends  AppCompatActivity  {
 				}
 			}
 			if (_data.get((int)_position).containsKey("profile_picture")) {
-				//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("profile_picture").toString())).into(profile_picture);
+				Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("profile_picture").toString())).into(profile_picture);
 			}
 			else {
 				profile_picture.setImageResource(R.drawable.default_profile_picture);

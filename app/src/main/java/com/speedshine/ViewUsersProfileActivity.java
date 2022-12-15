@@ -427,20 +427,20 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 						spinner_account_level.setSelection((int)(account_type_number - 1));
 						if (fromDbAccountMap.containsKey("valid_id")) {
 							valid_id_preview_text.setVisibility(View.GONE);
-							//Glide.with(getApplicationContext()).load(Uri.parse(fromDbAccountMap.get("valid_id").toString())).into(valid_id_preview_img);
+							Glide.with(getApplicationContext()).load(Uri.parse(fromDbAccountMap.get("valid_id").toString())).into(valid_id_preview_img);
 						}
 						else {
 							
 						}
 						if (fromDbAccountMap.containsKey("selfie_id")) {
 							selfie_preview_text.setVisibility(View.GONE);
-							//Glide.with(getApplicationContext()).load(Uri.parse(fromDbAccountMap.get("selfie_id").toString())).into(selfie_preview_img);
+							Glide.with(getApplicationContext()).load(Uri.parse(fromDbAccountMap.get("selfie_id").toString())).into(selfie_preview_img);
 						}
 						else {
 							selfie_preview_img.setVisibility(View.GONE);
 						}
 						if (fromDbAccountMap.containsKey("avatar")) {
-							//Glide.with(getApplicationContext()).load(Uri.parse(fromDbAccountMap.get("avatar").toString())).into(profile_picture_img);
+							Glide.with(getApplicationContext()).load(Uri.parse(fromDbAccountMap.get("avatar").toString())).into(profile_picture_img);
 						}
 						else {
 							
@@ -608,7 +608,7 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 		SparseBooleanArray _arr = _list.getCheckedItemPositions();
 		for (int _iIdx = 0; _iIdx < _arr.size(); _iIdx++) {
 			if (_arr.valueAt(_iIdx))
-			_result.add((double)_arr.keyAt(_iIdx));
+				_result.add((double)_arr.keyAt(_iIdx));
 		}
 		return _result;
 	}

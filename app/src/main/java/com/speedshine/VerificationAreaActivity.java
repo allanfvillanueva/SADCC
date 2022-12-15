@@ -680,7 +680,8 @@ public class VerificationAreaActivity extends  AppCompatActivity  {
 		fbdb.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot _dataSnapshot) {
-						getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+						//getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+						getAccountId = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
 				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				tbEmail.setText(AccountInfoMap.get("email").toString());
 				if (_dataSnapshot.child(getAccountId).child("verified").getValue().toString().equals("1")) {
@@ -853,4 +854,4 @@ public class VerificationAreaActivity extends  AppCompatActivity  {
 		return getResources().getDisplayMetrics().heightPixels;
 	}
 	
-}
+}

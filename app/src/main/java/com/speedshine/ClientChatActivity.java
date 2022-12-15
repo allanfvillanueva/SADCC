@@ -536,7 +536,8 @@ public class ClientChatActivity extends  AppCompatActivity  {
 		pd.setCanceledOnTouchOutside(false);
 		pd.show();
 		hasImage = false;
-		getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		//getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		getAccountId = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
 		fbaccount.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot _dataSnapshot) {
@@ -846,11 +847,11 @@ public class ClientChatActivity extends  AppCompatActivity  {
 					rightText.setVisibility(View.VISIBLE);
 				}
 				else {
-					//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("content").toString())).into(rightContentImg);
+					Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("content").toString())).into(rightContentImg);
 					rightImageMessage.setVisibility(View.VISIBLE);
 				}
 				if (_data.get((int)_position).containsKey("avatar")) {
-					//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("avatar").toString())).into(rightSenderIcon);
+					Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("avatar").toString())).into(rightSenderIcon);
 				}
 			}
 			else {
@@ -861,11 +862,11 @@ public class ClientChatActivity extends  AppCompatActivity  {
 					leftText.setVisibility(View.VISIBLE);
 				}
 				else {
-					//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("content").toString())).into(leftContentImg);
+					Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("content").toString())).into(leftContentImg);
 					leftImageMessage.setVisibility(View.VISIBLE);
 				}
 				if (_data.get((int)_position).containsKey("avatar")) {
-					//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("avatar").toString())).into(leftSenderIcon);
+					Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("avatar").toString())).into(leftSenderIcon);
 				}
 			}
 			// event

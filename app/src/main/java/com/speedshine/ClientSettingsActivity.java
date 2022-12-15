@@ -453,7 +453,8 @@ public class ClientSettingsActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		_design();
-		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
 		dbaccount.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot _dataSnapshot) {
@@ -464,7 +465,7 @@ public class ClientSettingsActivity extends  AppCompatActivity  {
 				tbdate.setText(accountDataMap.get("bday").toString());
 				tbgender.setText(accountDataMap.get("gender").toString());
 				if (accountDataMap.containsKey("avatar")) {
-					//Glide.with(getApplicationContext()).load(Uri.parse(accountDataMap.get("avatar").toString())).into(profile_picture_img);
+					Glide.with(getApplicationContext()).load(Uri.parse(accountDataMap.get("avatar").toString())).into(profile_picture_img);
 				}
 				}
 				@Override

@@ -369,7 +369,8 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 		rb.setNumStars((int)5);
 		rb.setStepSize((float)1);
 		rb.setRating((float)1);
-		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
 		appointment_id = getIntent().getStringExtra("appointment_id");
 		appdb = _firebase.getReference("appointments/" + userid);
 		appdb.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -506,4 +507,4 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 		return getResources().getDisplayMetrics().heightPixels;
 	}
 	
-}
+}

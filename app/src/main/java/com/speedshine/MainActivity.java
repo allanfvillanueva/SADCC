@@ -2,45 +2,11 @@ package com.speedshine;
 
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.View;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.speedshine.databinding.ActivityMainBinding;
-
-import android.view.Menu;
-import android.view.MenuItem;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.annotation.*;
-import android.app.*;
-import android.os.*;
-import android.view.*;
-import android.view.View.*;
 import android.widget.*;
-import android.content.*;
-import android.content.res.*;
-import android.graphics.*;
-import android.graphics.drawable.*;
-import android.media.*;
-import android.net.*;
-import android.text.*;
-import android.text.style.*;
 import android.util.*;
-import android.webkit.*;
-import android.animation.*;
-import android.view.animation.*;
 import java.util.*;
-import java.util.regex.*;
-import java.text.*;
-import org.json.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import android.widget.LinearLayout;
@@ -48,22 +14,18 @@ import android.widget.ImageView;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.content.Intent;
-import android.net.Uri;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import android.content.ClipData;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.DialogFragment;
 import androidx.core.content.ContextCompat;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
 
 public class MainActivity extends  AppCompatActivity  {
+
+    //uid: uhrzwFpnfmWN6lQCWsu4HkPEee12 allan.fvillanueva@gmail.com
 
     public final int REQ_CD_FP = 101;
     private Timer _timer = new Timer();
@@ -87,19 +49,51 @@ public class MainActivity extends  AppCompatActivity  {
     private OnCompleteListener<AuthResult> _fbauth_sign_in_listener;
     private OnCompleteListener<Void> _fbauth_reset_password_listener;
     private Intent fp = new Intent(Intent.ACTION_GET_CONTENT);
+
     @Override
     protected void onCreate(Bundle _savedInstanceState) {
         super.onCreate(_savedInstanceState);
         setContentView(R.layout.main);
         initialize(_savedInstanceState);
+
         com.google.firebase.FirebaseApp.initializeApp(this);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
         }
         else {
-            initializeLogic();
+            //initializeLogic();
+            bypassLogic();
         }
     }
+
+    private void bypassLogic() {
+        main = (LinearLayout) findViewById(R.id.main);
+        imageview1 = (ImageView) findViewById(R.id.imageview1);
+        fp.setType("image/*");
+        fp.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+
+        tmr = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        i.setClass(getApplicationContext(), AdminDashboardActivity.class);
+                        startActivity(i);
+                        finish();
+
+                        //i.setClass(getApplicationContext(), AccountActivity.class);
+                        //startActivity(i);
+                        //finish();
+
+                    }
+                });
+            }
+        };
+        _timer.schedule(tmr, (int)(1000));
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

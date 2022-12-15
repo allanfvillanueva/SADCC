@@ -382,7 +382,7 @@ public class ProductListActivity extends  AppCompatActivity  {
 			final ImageView imageview3 = (ImageView) _view.findViewById(R.id.imageview3);
 			final TextView dislike = (TextView) _view.findViewById(R.id.dislike);
 			
-			//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
+			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
 			box.setElevation((float)5);
 			android.graphics.drawable.GradientDrawable box_design = new android.graphics.drawable.GradientDrawable();
 			box_design.setColor(0xFFFFFFFF);

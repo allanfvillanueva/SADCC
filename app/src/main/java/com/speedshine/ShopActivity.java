@@ -2,6 +2,8 @@ package com.speedshine;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.*;
+
+import android.annotation.SuppressLint;
 import android.app.*;
 import android.os.*;
 import android.view.*;
@@ -125,8 +127,16 @@ public class ShopActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.shop);
 		initialize(_savedInstanceState);
+
+		//bypassFirebase();
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
+	}
+
+	private void bypassFirebase() {
+		_design();
+		_loadHotWheelsDB();
 	}
 	
 	private void initialize(Bundle _savedInstanceState) {
@@ -499,7 +509,7 @@ public class ShopActivity extends  AppCompatActivity  {
 			final TextView unit = (TextView) _view.findViewById(R.id.unit);
 			final TextView textview2 = (TextView) _view.findViewById(R.id.textview2);
 			
-			//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
+			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
 			linear3.setBackgroundColor(0xB5FFFFFF);
 			unit.setText(_data.get((int)_position).get("unit").toString().toUpperCase());
 			textview2.setText(_data.get((int)_position).get("brand").toString());
@@ -534,7 +544,7 @@ public class ShopActivity extends  AppCompatActivity  {
 		}
 		
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
+		public void onBindViewHolder(ViewHolder _holder, @SuppressLint("RecyclerView") final int _position) {
 			View _view = _holder.itemView;
 			
 			final LinearLayout main = (LinearLayout) _view.findViewById(R.id.main);
@@ -551,7 +561,7 @@ public class ShopActivity extends  AppCompatActivity  {
 			
 			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			_view.setLayoutParams(_lp);
-			//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
+			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
 			box.setElevation((float)8);
 			android.graphics.drawable.GradientDrawable box_design = new android.graphics.drawable.GradientDrawable();
 			box_design.setColor(0xFFFFFFFF);
@@ -603,7 +613,7 @@ public class ShopActivity extends  AppCompatActivity  {
 		}
 		
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, final int _position) {
+		public void onBindViewHolder(ViewHolder _holder, @SuppressLint("RecyclerView") final int _position) {
 			View _view = _holder.itemView;
 			
 			final LinearLayout main = (LinearLayout) _view.findViewById(R.id.main);
@@ -620,7 +630,7 @@ public class ShopActivity extends  AppCompatActivity  {
 			
 			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			_view.setLayoutParams(_lp);
-			//Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
+			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
 			box.setElevation((float)8);
 			android.graphics.drawable.GradientDrawable box_design = new android.graphics.drawable.GradientDrawable();
 			box_design.setColor(0xFFFFFFFF);
