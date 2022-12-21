@@ -85,6 +85,9 @@ public class ManageAppointmentActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.manage_appointment);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ManageAppointmentActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -472,4 +475,4 @@ public class ManageAppointmentActivity extends  AppCompatActivity  {
 		return getResources().getDisplayMetrics().heightPixels;
 	}
 	
-}
+}

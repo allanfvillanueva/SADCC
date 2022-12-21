@@ -50,6 +50,8 @@ import android.widget.AdapterView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.bumptech.glide.Glide;
+
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -140,6 +142,9 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.view_users_profile);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ViewUsersProfileActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -313,7 +318,9 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 					@Override
 					public void onClick(DialogInterface _dialog, int _which) {
 						fbdbaccount.child(str_uid).child("verified").setValue("2");
+
 						SketchwareUtil.showMessage(getApplicationContext(), "This user was successfully activated.");
+						sendPushNotification("SADCC",tbfirstname.getText().toString() + " " + tblastname.getText().toString() + " was successfully activated.");
 					}
 				});
 				d.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -365,6 +372,27 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 		};
 		fbdbaccount.addChildEventListener(_fbdbaccount_child_listener);
 	}
+
+	private void updateFirebaseUserData() {
+		Log.d("av","trying to update user data");
+
+		DatabaseReference dbAccounts = _firebase.getReference("account");
+
+		map_account = new HashMap<>();
+		map_account.put("uid", "");
+		map_account.put("fname", "");
+		map_account.put("mname", "");
+		map_account.put("lname", "");
+		map_account.put("email", "");
+		map_account.put("bday", "");
+		map_account.put("gender", "");
+		map_account.put("verified", "");
+		map_account.put("account_type", "");
+		dbAccounts.child("").updateChildren(map_account);
+
+		Log.d("av","update finished for user account");
+
+	}
 	
 	private void initializeLogic() {
 		_design();
@@ -372,31 +400,42 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 		boxVacinationState.setVisibility(View.GONE);
 		str_uid = getIntent().getStringExtra("userid");
 		fromDbAccountMap = new Gson().fromJson(getIntent().getStringExtra("data"), new TypeToken<HashMap<String, Object>>(){}.getType());
+
+		String accountType = getIntent().getStringExtra("account_type");
+		String accountVerified = getIntent().getStringExtra("verified");
+
 		tmr = new TimerTask() {
 			@Override
 			public void run() {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						tblastname.setText(fromDbAccountMap.get("lname").toString());
-						tbfirstname.setText(fromDbAccountMap.get("fname").toString());
-						tbmiddlename.setText(fromDbAccountMap.get("mname").toString());
-						tbdate.setText(fromDbAccountMap.get("bday").toString());
-						tbgender.setText(fromDbAccountMap.get("gender").toString());
-						if (fromDbAccountMap.get("account_type").toString().equals("1")) {
+						tblastname.setText(getIntent().getStringExtra("lname"));
+						tbfirstname.setText(getIntent().getStringExtra("fname"));
+						tbmiddlename.setText(getIntent().getStringExtra("mname"));
+						tbdate.setText(getIntent().getStringExtra("bday"));
+						tbgender.setText(getIntent().getStringExtra("gender"));
+
+						Log.d("avrepos","account_type=" + accountType+ " verified=" + accountVerified);
+
+						if(accountType.equals("1")) {
 							account_type_number = 1;
 							tbAccountLevel.setText("Administrator");
 							verification_status_lb.setVisibility(View.VISIBLE);
+							Log.d("avrepos","account_type=1");
 						}
-						if (fromDbAccountMap.get("account_type").toString().equals("2")) {
+						if(accountType.equals("2")) {
 							account_type_number = 2;
 							btnVerificationState.setText("Employee");
+							Log.d("avrepos","account_type=2");
 						}
-						if (fromDbAccountMap.get("account_type").toString().equals("3")) {
+						if (accountType.equals("3")) {
+							Log.d("avrepos","account_type=3");
 							account_type_number = 3;
 							tbAccountLevel.setText("Client");
 							btnVerificationState.setVisibility(View.GONE);
-							if (fromDbAccountMap.get("verified").toString().equals("2")) {
+							if (accountVerified.equals("2")) {
+								Log.d("avrepos","verified=2");
 								verification_status_lb.setText("VERIFIED");
 								verification_status_lb.setTextColor(0xFF1C6758);
 								btnActivate.setEnabled(false);
@@ -407,11 +446,13 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 								android.graphics.drawable.RippleDrawable btnActivate_re = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ 0xFF9E9E9E }), btnActivate_design, null);
 								btnActivate.setBackground(btnActivate_re);
 							}
-							if (fromDbAccountMap.get("verified").toString().equals("1")) {
+							if (accountVerified.equals("1")) {
+								Log.d("avrepos","verified=1");
 								verification_status_lb.setText("NOT VERIFIED");
 								verification_status_lb.setTextColor(0xFFDD1D5E);
 							}
-							if (fromDbAccountMap.get("verified").toString().equals("0")) {
+							if (accountVerified.equals("0")) {
+								Log.d("avrepos","verified=0");
 								status_label.setText("NO UPLOADED VALID ID");
 								verification_status_lb.setText("NOT VERIFIED");
 								verification_status_lb.setTextColor(0xFFDD1D5E);
@@ -424,6 +465,14 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 								btnActivate.setBackground(btnActivate_re);
 							}
 						}
+
+						if (accountVerified.equals("2")) {
+							btnVerificationState.setVisibility(View.GONE);
+						}
+						else {
+							btnVerificationState.setVisibility(View.VISIBLE);
+						}
+
 						spinner_account_level.setSelection((int)(account_type_number - 1));
 						if (fromDbAccountMap.containsKey("valid_id")) {
 							valid_id_preview_text.setVisibility(View.GONE);
@@ -450,6 +499,9 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 			}
 		};
 		_timer.schedule(tmr, (int)(500));
+
+
+
 	}
 	
 	@Override
@@ -484,7 +536,32 @@ public class ViewUsersProfileActivity extends  AppCompatActivity  {
 		}
 		
 	}
-	
+	private void sendPushNotification(String title, String message) {
+		String channel_id = "notification_channel";
+
+		// Create a Builder object using NotificationCompat
+		// class. This will allow control over all the flags
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
+				.setSmallIcon(R.drawable.app_icon)
+				.setAutoCancel(true)
+				.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+				.setOnlyAlertOnce(true);
+
+		builder.setContentTitle(title).setContentText(message).setSmallIcon(R.drawable.app_icon);
+		// Create an object of NotificationManager class to
+		// notify the
+		// user of events that happen in the background.
+		NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// Check if the Android Version is greater than Oreo
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel notificationChannel = new NotificationChannel(channel_id, "web_app", NotificationManager.IMPORTANCE_HIGH);
+			notificationManager.createNotificationChannel(notificationChannel);
+		}
+
+		int oneTimeID = (int) SystemClock.uptimeMillis();
+		notificationManager.notify(oneTimeID, builder.build());
+	}
 	
 	public void _showDatePicker () {
 		androidx.appcompat.app.AppCompatDialogFragment newFragment = new DatePickerFragment();

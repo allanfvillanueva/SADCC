@@ -62,6 +62,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
 
 
 public class AccountActivity extends  AppCompatActivity  { 
@@ -139,6 +147,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.account);
 		initialize(_savedInstanceState);
+
+		Log.d("av","AccountActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -186,6 +197,7 @@ public class AccountActivity extends  AppCompatActivity  {
 		btnLogin.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
+
 				if (tbLoginEmail.getText().toString().trim().equals("")) {
 					SketchwareUtil.showMessage(getApplicationContext(), "Please enter your email");
 					return;
@@ -199,12 +211,15 @@ public class AccountActivity extends  AppCompatActivity  {
 				pd.setCancelable(false);
 				pd.setCanceledOnTouchOutside(false);
 				pd.show();
+
 			}
 		});
 		
 		btnGoogleLogin.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
+				Log.d("av","btnGoogleLogin.setOnClickListener");
+
 				Intent signInIntent = gl.getSignInIntent();
 				startActivityForResult(signInIntent, REQ_CD_GL);
 			}
@@ -242,11 +257,11 @@ public class AccountActivity extends  AppCompatActivity  {
 					return;
 				}
 				if (!tb_repassword.getText().toString().equals(tb_password.getText().toString())) {
-					SketchwareUtil.showMessage(getApplicationContext(), "Passwords does'nt match.");
+					SketchwareUtil.showMessage(getApplicationContext(), "Passwords doesn't match.");
 					return;
 				}
 				if (tb_bday.getText().toString().equals("")) {
-					SketchwareUtil.showMessage(getApplicationContext(), "Please enter/select your bday.");
+					SketchwareUtil.showMessage(getApplicationContext(), "Please enter/select your birthday.");
 					return;
 				}
 				fbauth.createUserWithEmailAndPassword(tb_email.getText().toString(), tb_password.getText().toString()).addOnCompleteListener(AccountActivity.this, _fbauth_create_user_listener);
@@ -335,6 +350,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		fbauth_updateEmailListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
+
+				Log.d("av","fbauth_updateEmailListener");
+
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
 				
@@ -344,6 +362,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		fbauth_updatePasswordListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
+
+				Log.d("av","fbauth_updatePasswordListener");
+
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
 				
@@ -353,6 +374,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		fbauth_emailVerificationSentListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
+
+				Log.d("av","fbauth_emailVerificationSentListener");
+
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
 				
@@ -362,6 +386,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		fbauth_deleteUserListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
+
+				Log.d("av","fbauth_deleteUserListener");
+
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
 				
@@ -371,6 +398,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		fbauth_phoneAuthListener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> task){
+
+				Log.d("av","fbauth_phoneAuthListener");
+
 				final boolean _success = task.isSuccessful();
 				final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
 				
@@ -380,6 +410,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		fbauth_updateProfileListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
+
+				Log.d("av","fbauth_updateProfileListener");
+
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
 				
@@ -389,6 +422,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		fbauth_googleSignInListener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> task){
+
+				Log.d("av","fbauth_googleSignInListener");
+
 				final boolean _success = task.isSuccessful();
 				final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
 				
@@ -398,6 +434,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		_fbauth_create_user_listener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> _param1) {
+
+				Log.d("av","_fbauth_create_user_listener");
+
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
 				pd.dismiss();
@@ -427,6 +466,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		_fbauth_sign_in_listener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> _param1) {
+
+				Log.d("av","_fbauth_sign_in_listener");
+
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
 				pd.dismiss();
@@ -444,6 +486,9 @@ public class AccountActivity extends  AppCompatActivity  {
 		_fbauth_reset_password_listener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
+
+				Log.d("av","_fbauth_reset_password_listener");
+
 				final boolean _success = _param1.isSuccessful();
 				
 			}
@@ -456,77 +501,126 @@ public class AccountActivity extends  AppCompatActivity  {
 		_loadGender();
 		_getTheDate();
 		GoogleSignInOptions gop = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().requestProfile().requestIdToken("1090849595737-8p185b3f3pru1oc1c68tlqp6so2r027v.apps.googleusercontent.com").build();
-		gl = GoogleSignIn.getClient(this,gop);
+		gl = GoogleSignIn.getClient(AccountActivity.this,gop);
 	}
 	
 	@Override
 	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
 		
 		super.onActivityResult(_requestCode, _resultCode, _data);
+
+		Log.d("av","AccountActivity onActivityResult");
 		
 		switch (_requestCode) {
 			case REQ_CD_GL:
-			if (_resultCode == Activity.RESULT_OK) {
-				
-Task<GoogleSignInAccount> _task = GoogleSignIn.getSignedInAccountFromIntent(_data);
-				
-				pd.setMessage("Logging to your account.");
-				pd.setCancelable(false);
-				pd.setCanceledOnTouchOutside(false);
-				pd.show();
-				try{
-					gsia = _task.getResult(ApiException.class);
-					AuthCredential credential = GoogleAuthProvider.getCredential(gsia.getIdToken(), null);
-					fbauth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-						@Override
-						public void onComplete(@NonNull Task<AuthResult> task) {
-							fbregister.addListenerForSingleValueEvent(new ValueEventListener() {
+
+				Log.d("av","_resultCode == REQ_CD_GL");
+
+				Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(_data);
+
+				try {
+					GoogleSignInAccount account = task.getResult(ApiException.class);
+					Log.d("av","AccountActivity google sign-in success");
+
+					Task<GoogleSignInAccount> _task = GoogleSignIn.getSignedInAccountFromIntent(_data);
+
+					pd.setMessage("Logging to your account.");
+					pd.setCancelable(false);
+					pd.setCanceledOnTouchOutside(false);
+					pd.show();
+					try{
+						gsia = _task.getResult(ApiException.class);
+						AuthCredential credential = GoogleAuthProvider.getCredential(gsia.getIdToken(), null);
+						Log.d("av","GoogleAuthProvider.getCredential(gsia.getIdToken()");
+						Log.d("av","GoogleAuthProvider.getCredential(gsia.getIdToken()");
+
+						fbauth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+							@Override
+							public void onComplete(@NonNull Task<AuthResult> task) {
+
+								fbregister.addListenerForSingleValueEvent(new ValueEventListener() {
 									@Override
 									public void onDataChange(DataSnapshot _dataSnapshot) {
-											getUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-									if (_dataSnapshot.hasChild(getUID)) {
-										i.setClass(getApplicationContext(), ShopActivity.class);
-										startActivity(i);
-										finish();
-									}
-									else {
-										map_account = new HashMap<>();
-										map_account.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-										map_account.put("fname", gsia.getGivenName());
-										map_account.put("mname", "");
-										map_account.put("lname", gsia.getFamilyName());
-										map_account.put("email", gsia.getEmail());
-										map_account.put("bday", tb_bday.getText().toString());
-										map_account.put("gender", "");
-										map_account.put("verified", "0");
-										map_account.put("account_type", "3");
-										fbregister.child(getUID).updateChildren(map_account);
-										i.setClass(getApplicationContext(), ShopActivity.class);
-										startActivity(i);
-										finish();
-									}
+										getUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+										Log.d("av",getUID);
+
+										if (_dataSnapshot.hasChild(getUID)) {
+
+											Log.d("av","GUID exists, loading ShopActivity");
+
+											i.setClass(getApplicationContext(), ShopActivity.class);
+											startActivity(i);
+											finish();
+										}
+										else {
+
+											Log.d("av","GUID not exists, saving details to Firebase");
+
+											map_account = new HashMap<>();
+											map_account.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+											map_account.put("fname", gsia.getGivenName());
+											map_account.put("mname", "");
+											map_account.put("lname", gsia.getFamilyName());
+											map_account.put("email", gsia.getEmail());
+											map_account.put("bday", tb_bday.getText().toString());
+											map_account.put("gender", "");
+											map_account.put("verified", "0");
+											map_account.put("account_type", "3");
+											fbregister.child(getUID).updateChildren(map_account);
+
+											Log.d("av","Details saved to Firebase, continuing to ShopActivity");
+
+											i.setClass(getApplicationContext(), ShopActivity.class);
+											startActivity(i);
+											finish();
+										}
 									}
 									@Override
 									public void onCancelled(DatabaseError _databaseError) {
 									}
-							});
-						}
-					});
+								});
+							}
+						});
+					}
+					catch(ApiException e){
+						String Error = e.getMessage();
+						SketchwareUtil.showMessage(getApplicationContext(), "Failed to login to your google account, Please try again later.");
+					}
+
+				} catch (ApiException e) {
+					// The ApiException status code indicates the detailed failure reason.
+					// Please refer to the GoogleSignInStatusCodes class reference for more information.
+					Log.d("avrepos","LoginActivity signInResult:failed code=" + e.getStatusCode());
+
 				}
-				catch(ApiException e){
-					String Error = e.getMessage();
-					SketchwareUtil.showMessage(getApplicationContext(), "Failed to login to your google account, Please try again later.");
-				}
-			}
-			else {
-				
-			}
 			break;
 			default:
 			break;
 		}
 	}
 	
+	private void updateFirebaseUserData() {
+		Log.d("av","trying to update user data");
+
+		DatabaseReference dbAccounts = _firebase.getReference("account");
+
+		map_account = new HashMap<>();
+		map_account.put("uid", "uhrzwFpnfmWN6lQCWsu4HkPEee12");
+		map_account.put("fname", gsia.getGivenName());
+		map_account.put("mname", "");
+		map_account.put("lname", gsia.getFamilyName());
+		map_account.put("email", gsia.getEmail());
+		map_account.put("bday", tb_bday.getText().toString());
+		map_account.put("gender", "Male");
+		map_account.put("verified", "2");
+		map_account.put("account_type", "1");
+		dbAccounts.child(getUID).updateChildren(map_account);
+
+		Log.d("av","update finished for user account");
+
+	}
+
 	public void _loadGender () {
 		genderListString.add("Male");
 		genderListString.add("Female");

@@ -97,6 +97,9 @@ public class ProductListActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.product_list);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ProductListActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -439,7 +442,7 @@ public class ProductListActivity extends  AppCompatActivity  {
 		SparseBooleanArray _arr = _list.getCheckedItemPositions();
 		for (int _iIdx = 0; _iIdx < _arr.size(); _iIdx++) {
 			if (_arr.valueAt(_iIdx))
-			_result.add((double)_arr.keyAt(_iIdx));
+				_result.add((double)_arr.keyAt(_iIdx));
 		}
 		return _result;
 	}

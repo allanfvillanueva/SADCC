@@ -98,6 +98,9 @@ public class ClientTrackItemsActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.client_track_items);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ClientTrackItemsActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -297,8 +300,7 @@ public class ClientTrackItemsActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		_design();
-		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		appdb = _firebase.getReference("appointments/" + userid);
 		_childEventListener();
 		_loadFirebase();

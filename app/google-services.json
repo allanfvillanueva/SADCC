@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1090849595737",
+    "firebase_url": "https://sadcc-66378-default-rtdb.firebaseio.com",
+    "project_id": "sadcc-66378",
+    "storage_bucket": "sadcc-66378.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090849595737:android:10be20d7ef09d242192c48",
+        "android_client_info": {
+          "package_name": "com.speedshine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1090849595737-rblk60unlq1n7u82g31p1h61g0121ivs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.speedshine",
+            "certificate_hash": "42f5a62dd0c56a4772608f53aa1e84efe679de26"
+          }
+        },
+        {
+          "client_id": "1090849595737-8p185b3f3pru1oc1c68tlqp6so2r027v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvRl3HAAum0cQkamEEFCDjcRn297CBVTc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1090849595737-8p185b3f3pru1oc1c68tlqp6so2r027v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

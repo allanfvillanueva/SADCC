@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.*;
 import android.app.*;
 import android.os.*;
+import android.text.method.LinkMovementMethod;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
@@ -70,12 +71,12 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 
 
-public class ClientChatActivity extends  AppCompatActivity  { 
-	
+public class ClientChatActivity extends  AppCompatActivity  {
+
 	public final int REQ_CD_FP = 101;
 	private FirebaseDatabase _firebase = FirebaseDatabase.getInstance();
 	private FirebaseStorage _firebase_storage = FirebaseStorage.getInstance();
-	
+
 	private  DatabaseReference chat;
 	private String userid = "";
 	private HashMap<String, Object> sendMessage = new HashMap<>();
@@ -99,10 +100,12 @@ public class ClientChatActivity extends  AppCompatActivity  {
 	private double LastSegmentIndex = 0;
 	private String LastSegmentID = "";
 	private boolean hasLastSegment = false;
-	
+
+	private String attachedFileURL = "";
+
 	private ArrayList<HashMap<String, Object>> chatlm = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> AllMessagesLM = new ArrayList<>();
-	
+
 	private LinearLayout main;
 	private LinearLayout header;
 	private LinearLayout box;
@@ -121,7 +124,7 @@ public class ClientChatActivity extends  AppCompatActivity  {
 	private ImageView imageview6;
 	private ImageView imageview7;
 	private Button btnStartConversation;
-	
+
 	private DatabaseReference fbproducts = _firebase.getReference("products");
 	private ChildEventListener _fbproducts_child_listener;
 	private FirebaseAuth fbauth;
@@ -157,7 +160,7 @@ public class ClientChatActivity extends  AppCompatActivity  {
 		initialize(_savedInstanceState);
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
-		|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+				|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
 			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
 		}
 		else {
@@ -171,9 +174,9 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			initializeLogic();
 		}
 	}
-	
+
 	private void initialize(Bundle _savedInstanceState) {
-		
+
 		main = (LinearLayout) findViewById(R.id.main);
 		header = (LinearLayout) findViewById(R.id.header);
 		box = (LinearLayout) findViewById(R.id.box);
@@ -195,34 +198,56 @@ public class ClientChatActivity extends  AppCompatActivity  {
 		fbauth = FirebaseAuth.getInstance();
 		fp.setType("image/*");
 		fp.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-		
+
 		btnExit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
 				finish();
 			}
 		});
-		
+
 		btnSendImage.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
-				startActivityForResult(fp, REQ_CD_FP);
+				//startActivityForResult(fp, REQ_CD_FP);
+
+				String[] mimeTypes =
+						{"application/pdf"};
+
+				Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+				intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+					intent.setType(mimeTypes.length == 1 ? mimeTypes[0] : "*/*");
+					if (mimeTypes.length > 0) {
+						intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+					}
+				} else {
+					String mimeTypesStr = "";
+					for (String mimeType : mimeTypes) {
+						mimeTypesStr += mimeType + "|";
+					}
+					intent.setType(mimeTypesStr.substring(0,mimeTypesStr.length() - 1));
+				}
+				startActivityForResult(Intent.createChooser(intent,"Attach File"), REQ_CD_FP);
+
+			}
+
+		});
+
+		btnSend.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View _view) {
+
+				return true;
 			}
 		});
-		
-		btnSend.setOnLongClickListener(new View.OnLongClickListener() {
-			 @Override
-				public boolean onLongClick(View _view) {
-				
-				return true;
-				}
-			 });
-		
+
 		btnSend.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
 				if (tbMessage.getText().toString().equals("")) {
-					
+
 				}
 				else {
 					strMessage = tbMessage.getText().toString();
@@ -243,7 +268,7 @@ public class ClientChatActivity extends  AppCompatActivity  {
 				}
 			}
 		});
-		
+
 		btnStartConversation.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
@@ -261,62 +286,62 @@ public class ClientChatActivity extends  AppCompatActivity  {
 				dbchatroom.child(getAccountId).updateChildren(JoinRoomChatMap);
 			}
 		});
-		
+
 		_fbproducts_child_listener = new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildChanged(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildMoved(DataSnapshot _param1, String _param2) {
-				
+
 			}
-			
+
 			@Override
 			public void onChildRemoved(DataSnapshot _param1) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError _param1) {
 				final int _errorCode = _param1.getCode();
 				final String _errorMessage = _param1.getMessage();
-				
+
 			}
 		};
 		fbproducts.addChildEventListener(_fbproducts_child_listener);
-		
+
 		_fbstorage_upload_progress_listener = new OnProgressListener<UploadTask.TaskSnapshot>() {
 			@Override
 			public void onProgress(UploadTask.TaskSnapshot _param1) {
 				double _progressValue = (100.0 * _param1.getBytesTransferred()) / _param1.getTotalByteCount();
-				
+
 			}
 		};
-		
+
 		_fbstorage_download_progress_listener = new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
 			@Override
 			public void onProgress(FileDownloadTask.TaskSnapshot _param1) {
 				double _progressValue = (100.0 * _param1.getBytesTransferred()) / _param1.getTotalByteCount();
-				
+
 			}
 		};
-		
+
 		_fbstorage_upload_success_listener = new OnCompleteListener<Uri>() {
 			@Override
 			public void onComplete(Task<Uri> _param1) {
@@ -334,69 +359,69 @@ public class ClientChatActivity extends  AppCompatActivity  {
 				SketchwareUtil.showMessage(getApplicationContext(), "Success");
 			}
 		};
-		
+
 		_fbstorage_download_success_listener = new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
 			@Override
 			public void onSuccess(FileDownloadTask.TaskSnapshot _param1) {
 				final long _totalByteCount = _param1.getTotalByteCount();
-				
+
 			}
 		};
-		
+
 		_fbstorage_delete_success_listener = new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object _param1) {
-				
+
 			}
 		};
-		
+
 		_fbstorage_failure_listener = new OnFailureListener() {
 			@Override
 			public void onFailure(Exception _param1) {
 				final String _message = _param1.getMessage();
-				
+
 			}
 		};
-		
+
 		_fbaccount_child_listener = new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildChanged(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildMoved(DataSnapshot _param1, String _param2) {
-				
+
 			}
-			
+
 			@Override
 			public void onChildRemoved(DataSnapshot _param1) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError _param1) {
 				final int _errorCode = _param1.getCode();
 				final String _errorMessage = _param1.getMessage();
-				
+
 			}
 		};
 		fbaccount.addChildEventListener(_fbaccount_child_listener);
-		
+
 		_dbchatroom_child_listener = new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot _param1, String _param2) {
@@ -407,28 +432,28 @@ public class ClientChatActivity extends  AppCompatActivity  {
 				chatRoom.setVisibility(View.VISIBLE);
 				startConversation.setVisibility(View.GONE);
 			}
-			
+
 			@Override
 			public void onChildChanged(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildMoved(DataSnapshot _param1, String _param2) {
-				
+
 			}
-			
+
 			@Override
 			public void onChildRemoved(DataSnapshot _param1) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError _param1) {
 				final int _errorCode = _param1.getCode();
@@ -437,97 +462,97 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			}
 		};
 		dbchatroom.addChildEventListener(_dbchatroom_child_listener);
-		
+
 		fbauth_updateEmailListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_updatePasswordListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_emailVerificationSentListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_deleteUserListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_phoneAuthListener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> task){
 				final boolean _success = task.isSuccessful();
 				final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_updateProfileListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_googleSignInListener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> task){
 				final boolean _success = task.isSuccessful();
 				final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		_fbauth_create_user_listener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		_fbauth_sign_in_listener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		_fbauth_reset_password_listener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
-				
+
 			}
 		};
 	}
-	
+
 	private void initializeLogic() {
 		_design();
 		pd = new ProgressDialog(ClientChatActivity.this);
@@ -536,12 +561,11 @@ public class ClientChatActivity extends  AppCompatActivity  {
 		pd.setCanceledOnTouchOutside(false);
 		pd.show();
 		hasImage = false;
-		//getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-		getAccountId = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
+		getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		fbaccount.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot _dataSnapshot) {
-						Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
+			@Override
+			public void onDataChange(DataSnapshot _dataSnapshot) {
+				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				if (AccountInfoMap.containsKey("account_type")) {
 					if (AccountInfoMap.get("account_type").toString().equals("3")) {
 						userid = getAccountId;
@@ -551,6 +575,19 @@ public class ClientChatActivity extends  AppCompatActivity  {
 						ulname = AccountInfoMap.get("lname").toString();
 						mname = AccountInfoMap.get("mname").toString();
 						uid = AccountInfoMap.get("uid").toString();
+
+						pd.setMessage("Starting new conversation...");
+						pd.setCancelable(false);
+						pd.setCanceledOnTouchOutside(false);
+						pd.show();
+						ConversationId = dbchatroom.push().getKey();
+						JoinRoomChatMap = new HashMap<>();
+						JoinRoomChatMap.put("fname", ufname);
+						JoinRoomChatMap.put("lname", ulname);
+						JoinRoomChatMap.put("mname", mname);
+						JoinRoomChatMap.put("conversation_id", ConversationId);
+						JoinRoomChatMap.put("uid", uid);
+						dbchatroom.child(getAccountId).updateChildren(JoinRoomChatMap);
 					}
 					else {
 						userid = getIntent().getStringExtra("userid");
@@ -568,15 +605,15 @@ public class ClientChatActivity extends  AppCompatActivity  {
 				else {
 					fbaccount.child(getAccountId).child("account_type").setValue("3");
 				}
-				}
-				@Override
-				public void onCancelled(DatabaseError _databaseError) {
-				}
+			}
+			@Override
+			public void onCancelled(DatabaseError _databaseError) {
+			}
 		});
 		dbchatroom.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot _dataSnapshot) {
-						pd.dismiss();
+			@Override
+			public void onDataChange(DataSnapshot _dataSnapshot) {
+				pd.dismiss();
 				if (_dataSnapshot.hasChild(userid)) {
 					chatRoom.setVisibility(View.VISIBLE);
 					startConversation.setVisibility(View.GONE);
@@ -585,51 +622,97 @@ public class ClientChatActivity extends  AppCompatActivity  {
 					chatRoom.setVisibility(View.GONE);
 					startConversation.setVisibility(View.VISIBLE);
 				}
-				}
-				@Override
-				public void onCancelled(DatabaseError _databaseError) {
-				}
+			}
+			@Override
+			public void onCancelled(DatabaseError _databaseError) {
+			}
 		});
 	}
-	
+
 	@Override
 	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
-		
+
 		super.onActivityResult(_requestCode, _resultCode, _data);
-		
+
 		switch (_requestCode) {
 			case REQ_CD_FP:
-			if (_resultCode == Activity.RESULT_OK) {
-				ArrayList<String> _filePath = new ArrayList<>();
-				if (_data != null) {
-					if (_data.getClipData() != null) {
-						for (int _index = 0; _index < _data.getClipData().getItemCount(); _index++) {
-							ClipData.Item _item = _data.getClipData().getItemAt(_index);
-							_filePath.add(FileUtil.convertUriToFilePath(getApplicationContext(), _item.getUri()));
+				if (_resultCode == Activity.RESULT_OK) {
+
+					Log.d("avrepos","onActivityResult _data.getData()" + _data.getData());
+					ArrayList<String> _filePath = new ArrayList<>();
+
+
+					if (_data != null) {
+						if (_data.getClipData() != null) {
+							for (int _index = 0; _index < _data.getClipData().getItemCount(); _index++) {
+								ClipData.Item _item = _data.getClipData().getItemAt(_index);
+								_filePath.add(FileUtil.convertUriToFilePath(getApplicationContext(), _item.getUri()));
+							}
+						}						else {
+							_filePath.add(FileUtil.convertUriToFilePath(getApplicationContext(), _data.getData()));
 						}
 					}
-					else {
-						_filePath.add(FileUtil.convertUriToFilePath(getApplicationContext(), _data.getData()));
-					}
+
+					Uri imageuri = _data.getData();
+					final String timestamp = "" + System.currentTimeMillis();
+					StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+					final String messagePushID = timestamp;
+					//Toast.makeText(ClientChatActivity.this, imageuri.toString(), Toast.LENGTH_SHORT).show();
+
+					// Here we are uploading the pdf in firebase storage with the name of current time
+					final StorageReference filepath = storageReference.child(messagePushID + "." + "pdf");
+					//Toast.makeText(ClientChatActivity.this, filepath.getDownloadUrl().toString(), Toast.LENGTH_SHORT).show();
+					filepath.putFile(imageuri).continueWithTask(new Continuation() {
+						@Override
+						public Object then(@NonNull Task task) throws Exception {
+							if (!task.isSuccessful()) {
+								throw task.getException();
+							}
+							return filepath.getDownloadUrl();
+						}
+					}).addOnCompleteListener(new OnCompleteListener<Uri>() {
+						@Override
+						public void onComplete(@NonNull Task<Uri> task) {
+							if (task.isSuccessful()) {
+								// After uploading is done it progress
+								// dialog box will be dismissed
+
+								Uri uri = task.getResult();
+								String mimeType = getContentResolver().getType(uri);
+								String myurl;
+								myurl = uri.toString();
+								//Toast.makeText(ClientChatActivity.this, "Uploaded Successfully" + uri.toString(), Toast.LENGTH_SHORT).show();
+								Log.d("avrepos","onComplete file upload mimetype" + mimeType);
+								Log.d("avrepos","onComplete file URL" + uri.toString());
+								attachedFileURL = uri.toString();
+								tbMessage.setMovementMethod(LinkMovementMethod.getInstance());
+								tbMessage.setText(attachedFileURL);
+
+							} else {
+
+								Toast.makeText(ClientChatActivity.this, "Uploaded failed.", Toast.LENGTH_SHORT).show();
+							}
+						}
+					});
+
+//					fileName = "file-".concat(String.valueOf((long)(SketchwareUtil.getRandom((int)(1000000), (int)(9999999)))));
+//					filepathstr = _filePath.get((int)(0));
+//					fbstorage.child(fileName).putFile(Uri.fromFile(new File(filepathstr))).addOnFailureListener(_fbstorage_failure_listener).addOnProgressListener(_fbstorage_upload_progress_listener).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//						@Override
+//						public Task<Uri> then(Task<UploadTask.TaskSnapshot> task) throws Exception {
+//							return fbstorage.child(fileName).getDownloadUrl();
+//						}}).addOnCompleteListener(_fbstorage_upload_success_listener);
+//					SketchwareUtil.showMessage(getApplicationContext(), "Uploading");
 				}
-				fileName = "image-".concat(String.valueOf((long)(SketchwareUtil.getRandom((int)(1000000), (int)(9999999)))));
-				filepathstr = _filePath.get((int)(0));
-				fbstorage.child(fileName).putFile(Uri.fromFile(new File(filepathstr))).addOnFailureListener(_fbstorage_failure_listener).addOnProgressListener(_fbstorage_upload_progress_listener).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-					@Override
-					public Task<Uri> then(Task<UploadTask.TaskSnapshot> task) throws Exception {
-						return fbstorage.child(fileName).getDownloadUrl();
-					}}).addOnCompleteListener(_fbstorage_upload_success_listener);
-				SketchwareUtil.showMessage(getApplicationContext(), "Uploading");
-			}
-			else {
-				
-			}
-			break;
+				else {
+
+				}
+				break;
 			default:
-			break;
+				break;
 		}
 	}
-	
+
 	public void _design () {
 		android.graphics.drawable.GradientDrawable btnExit_design = new android.graphics.drawable.GradientDrawable();
 		btnExit_design.setColor(0xFFDD1D5E);
@@ -662,48 +745,48 @@ public class ClientChatActivity extends  AppCompatActivity  {
 		android.graphics.drawable.RippleDrawable btnStartConversation_re = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ 0xFFFCE4EC }), btnStartConversation_design, null);
 		btnStartConversation.setBackground(btnStartConversation_re);
 	}
-	
-	
+
+
 	public void _chatEventListener () {
 		chatListener = new ChildEventListener() {
-			        @Override
-			    public void onChildChanged(DataSnapshot _param1, String _param2) {
-				        GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
-				        final String _childKey = _param1.getKey();
-				        final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				        _loadChats();
+			@Override
+			public void onChildChanged(DataSnapshot _param1, String _param2) {
+				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
+				final String _childKey = _param1.getKey();
+				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
+				_loadChats();
 				_getTheLastSegmentId();
-				    }
-			    @Override
-			    public void onChildAdded(DataSnapshot _param1, String _param2) {
-				        GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
-				        final String _childKey = _param1.getKey();
-				        final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				        _loadChats();
+			}
+			@Override
+			public void onChildAdded(DataSnapshot _param1, String _param2) {
+				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
+				final String _childKey = _param1.getKey();
+				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
+				_loadChats();
 				_getTheLastSegmentId();
-				    }
-			    @Override
-			    public void onChildRemoved(DataSnapshot _param1) {
-				        GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
-				        final String _childKey = _param1.getKey();
-				        final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				         
-				    }
-			    @Override
-			    public void onCancelled(DatabaseError _param1) {
-				        final int _errorCode = _param1.getCode();
-				        final String _errorMessage = _param1.getMessage();
-				         
-				    }
-			    @Override
-			    public void onChildMoved(DataSnapshot _param1, String _param2) {
-				         
-				    }
+			}
+			@Override
+			public void onChildRemoved(DataSnapshot _param1) {
+				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
+				final String _childKey = _param1.getKey();
+				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
+
+			}
+			@Override
+			public void onCancelled(DatabaseError _param1) {
+				final int _errorCode = _param1.getCode();
+				final String _errorMessage = _param1.getMessage();
+
+			}
+			@Override
+			public void onChildMoved(DataSnapshot _param1, String _param2) {
+
+			}
 		};
 		chat.addChildEventListener(chatListener);
 	}
-	
-	
+
+
 	public void _loadChats () {
 		chat.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
@@ -728,8 +811,8 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			}
 		});
 	}
-	
-	
+
+
 	public void _getTheLastSegmentId () {
 		chat.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
@@ -759,24 +842,24 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			}
 		});
 	}
-	
-	
+
+
 	public class LvAdapter extends BaseAdapter {
 		ArrayList<HashMap<String, Object>> _data;
 		public LvAdapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
 		@Override
 		public int getCount() {
 			return _data.size();
 		}
-		
+
 		@Override
 		public HashMap<String, Object> getItem(int _index) {
 			return _data.get(_index);
 		}
-		
+
 		@Override
 		public long getItemId(int _index) {
 			return _index;
@@ -788,7 +871,7 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			if (_view == null) {
 				_view = _inflater.inflate(R.layout.rv_chat, null);
 			}
-			
+
 			final LinearLayout linear6 = (LinearLayout) _view.findViewById(R.id.linear6);
 			final LinearLayout boxRight = (LinearLayout) _view.findViewById(R.id.boxRight);
 			final LinearLayout boxLeft = (LinearLayout) _view.findViewById(R.id.boxLeft);
@@ -806,7 +889,7 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			final LinearLayout leftImageMessage = (LinearLayout) _view.findViewById(R.id.leftImageMessage);
 			final TextView lblLeft = (TextView) _view.findViewById(R.id.lblLeft);
 			final ImageView leftContentImg = (ImageView) _view.findViewById(R.id.leftContentImg);
-			
+
 			// Design
 			android.graphics.drawable.GradientDrawable rightImageMessage_design = new android.graphics.drawable.GradientDrawable();
 			rightImageMessage_design.setColor(0xFFDD1D5E);
@@ -873,6 +956,8 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			rightImageMessage.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View _view) {
+					Log.d("onClick right",attachedFileURL);
+
 					i.putExtra("picture_url", _data.get((int)_position).get("content").toString());
 					i.setClass(getApplicationContext(), ViewAssetsActivity.class);
 					startActivity(i);
@@ -881,65 +966,119 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			leftImageMessage.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View _view) {
+					Log.d("onClick left",attachedFileURL);
+
 					i.putExtra("picture_url", _data.get((int)_position).get("content").toString());
 					i.setClass(getApplicationContext(), ViewAssetsActivity.class);
 					startActivity(i);
 				}
 			});
-			
+			leftText.setOnTouchListener(new View.OnTouchListener() {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					switch (event.getAction()) {
+						case MotionEvent.ACTION_DOWN:
+							Log.d("onActionDown left","");
+							break;
+						case MotionEvent.ACTION_UP:
+							Log.d("onActionUp left","");
+							break;
+						case MotionEvent.ACTION_CANCEL:
+							break;
+					}
+					String _fileURL ="";
+					if (_data.get((int)_position).get("type").toString().equals("text")) {
+						_fileURL = _data.get((int)_position).get("content").toString();
+					}
+					if(Patterns.WEB_URL.matcher(_fileURL).matches()) {
+						Log.d("onActionDown left", _fileURL);
+						Intent urlIntent = new Intent(Intent.ACTION_VIEW,Uri.parse(_fileURL));
+						startActivity(urlIntent);
+					}
+					return true;
+				}
+			});
+			rightText.setOnTouchListener(new View.OnTouchListener() {
+
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					switch (event.getAction()) {
+						case MotionEvent.ACTION_DOWN:
+							Log.d("onActionDown right","");
+							break;
+						case MotionEvent.ACTION_UP:
+							Log.d("onActionUp right","");
+							break;
+						case MotionEvent.ACTION_CANCEL:
+							break;
+					}
+					String _fileURL ="";
+					if (_data.get((int)_position).get("type").toString().equals("text")) {
+						_fileURL = _data.get((int)_position).get("content").toString();
+					}
+					if(Patterns.WEB_URL.matcher(_fileURL).matches()) {
+						Log.d("onActionDown right", _fileURL);
+						Intent urlIntent = new Intent(Intent.ACTION_VIEW,Uri.parse(_fileURL));
+						startActivity(urlIntent);
+					}
+					return true;
+				}
+			});
+
 			return _view;
 		}
 	}
-	
+
 	@Deprecated
 	public void showMessage(String _s) {
 		Toast.makeText(getApplicationContext(), _s, Toast.LENGTH_SHORT).show();
 	}
-	
+
 	@Deprecated
 	public int getLocationX(View _v) {
 		int _location[] = new int[2];
 		_v.getLocationInWindow(_location);
 		return _location[0];
 	}
-	
+
 	@Deprecated
 	public int getLocationY(View _v) {
 		int _location[] = new int[2];
 		_v.getLocationInWindow(_location);
 		return _location[1];
 	}
-	
+
 	@Deprecated
 	public int getRandom(int _min, int _max) {
 		Random random = new Random();
 		return random.nextInt(_max - _min + 1) + _min;
 	}
-	
+
 	@Deprecated
 	public ArrayList<Double> getCheckedItemPositionsToArray(ListView _list) {
 		ArrayList<Double> _result = new ArrayList<Double>();
 		SparseBooleanArray _arr = _list.getCheckedItemPositions();
 		for (int _iIdx = 0; _iIdx < _arr.size(); _iIdx++) {
 			if (_arr.valueAt(_iIdx))
-			_result.add((double)_arr.keyAt(_iIdx));
+				_result.add((double)_arr.keyAt(_iIdx));
 		}
 		return _result;
 	}
-	
+
 	@Deprecated
 	public float getDip(int _input){
 		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, _input, getResources().getDisplayMetrics());
 	}
-	
+
 	@Deprecated
 	public int getDisplayWidthPixels(){
 		return getResources().getDisplayMetrics().widthPixels;
 	}
-	
+
 	@Deprecated
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
 }

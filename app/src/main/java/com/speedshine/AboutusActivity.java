@@ -84,6 +84,9 @@ public class AboutusActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.aboutus);
 		initialize(_savedInstanceState);
+
+		Log.d("av","AboutUsActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}

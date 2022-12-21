@@ -120,6 +120,9 @@ public class ViewProductActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.view_product);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ViewProductActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -703,7 +706,7 @@ public class ViewProductActivity extends  AppCompatActivity  {
 		SparseBooleanArray _arr = _list.getCheckedItemPositions();
 		for (int _iIdx = 0; _iIdx < _arr.size(); _iIdx++) {
 			if (_arr.valueAt(_iIdx))
-			_result.add((double)_arr.keyAt(_iIdx));
+				_result.add((double)_arr.keyAt(_iIdx));
 		}
 		return _result;
 	}

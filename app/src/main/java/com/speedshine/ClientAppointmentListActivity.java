@@ -51,6 +51,9 @@ public class ClientAppointmentListActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.client_appointment_list);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ChatAppointmentListActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}

@@ -120,6 +120,9 @@ public class ManageAccountsActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.manage_accounts);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ManageAccountsActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
 		|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
@@ -479,13 +482,20 @@ public class ManageAccountsActivity extends  AppCompatActivity  {
 			android.graphics.drawable.RippleDrawable btnDelete_re = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ 0xFFFFEBEE }), btnDelete_design, null);
 			btnDelete.setBackground(btnDelete_re);
 			verification_state.setVisibility(View.GONE);
+
 			// Bind data
 			name.setText(_data.get((int)_position).get("lname").toString().concat(" , ").concat(_data.get((int)_position).get("fname").toString().concat(" ").concat(_data.get((int)_position).get("mname").toString())));
 			if (_data.get((int)_position).get("account_type").toString().equals("1")) {
 				type.setText("Administrator");
+				if (_data.get((int)_position).get("verified").toString().equals("2")) {
+					verification_state.setVisibility(View.VISIBLE);
+				}
 			}
 			if (_data.get((int)_position).get("account_type").toString().equals("2")) {
 				type.setText("Employee");
+				if (_data.get((int)_position).get("verified").toString().equals("2")) {
+					verification_state.setVisibility(View.VISIBLE);
+				}
 			}
 			if (_data.get((int)_position).get("account_type").toString().equals("3")) {
 				type.setText("Client");
@@ -504,6 +514,17 @@ public class ManageAccountsActivity extends  AppCompatActivity  {
 				public void onClick(View _view) {
 					i.putExtra("userid", _data.get((int)_position).get("uid").toString());
 					i.putExtra("data", new Gson().toJson(_data.get((int)(_position))));
+
+					i.putExtra("lname", _data.get((int)_position).get("lname").toString());
+					i.putExtra("fname", _data.get((int)_position).get("fname").toString());
+					i.putExtra("mnane", _data.get((int)_position).get("mname").toString());
+					i.putExtra("gender", _data.get((int)_position).get("gender").toString());
+					i.putExtra("bday", _data.get((int)_position).get("bday").toString());
+
+					i.putExtra("account_type", _data.get((int)_position).get("account_type").toString());
+					i.putExtra("verified", _data.get((int)_position).get("verified").toString());
+
+
 					i.setClass(getApplicationContext(), ViewUsersProfileActivity.class);
 					startActivity(i);
 				}
@@ -571,7 +592,7 @@ public class ManageAccountsActivity extends  AppCompatActivity  {
 		SparseBooleanArray _arr = _list.getCheckedItemPositions();
 		for (int _iIdx = 0; _iIdx < _arr.size(); _iIdx++) {
 			if (_arr.valueAt(_iIdx))
-			_result.add((double)_arr.keyAt(_iIdx));
+				_result.add((double)_arr.keyAt(_iIdx));
 		}
 		return _result;
 	}

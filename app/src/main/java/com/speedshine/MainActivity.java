@@ -1,7 +1,10 @@
 package com.speedshine;
 
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.*;
@@ -56,42 +59,15 @@ public class MainActivity extends  AppCompatActivity  {
         setContentView(R.layout.main);
         initialize(_savedInstanceState);
 
+        Log.d("av","MainActivity onCreate");
+
         com.google.firebase.FirebaseApp.initializeApp(this);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
         }
         else {
-            //initializeLogic();
-            bypassLogic();
+            initializeLogic();
         }
-    }
-
-    private void bypassLogic() {
-        main = (LinearLayout) findViewById(R.id.main);
-        imageview1 = (ImageView) findViewById(R.id.imageview1);
-        fp.setType("image/*");
-        fp.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-
-        tmr = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        i.setClass(getApplicationContext(), AdminDashboardActivity.class);
-                        startActivity(i);
-                        finish();
-
-                        //i.setClass(getApplicationContext(), AccountActivity.class);
-                        //startActivity(i);
-                        //finish();
-
-                    }
-                });
-            }
-        };
-        _timer.schedule(tmr, (int)(1000));
     }
 
     @Override
@@ -209,11 +185,13 @@ public class MainActivity extends  AppCompatActivity  {
                     public void run() {
                         fbauth = FirebaseAuth.getInstance();
                         if ((FirebaseAuth.getInstance().getCurrentUser() != null)) {
+                            Log.d("av","FirebaseAuth.getInstance().getCurrentUser() not null, showing ShopActivity");
                             i.setClass(getApplicationContext(), ShopActivity.class);
                             startActivity(i);
                             finish();
                         }
                         else {
+                            Log.d("av","FirebaseAuth.getInstance().getCurrentUser() is null, showing AccountActivity");
                             i.setClass(getApplicationContext(), AccountActivity.class);
                             startActivity(i);
                             finish();
@@ -224,6 +202,16 @@ public class MainActivity extends  AppCompatActivity  {
         };
         _timer.schedule(tmr, (int)(1000));
     }
+
+    // Declare the launcher at the top of your Activity/Fragment:
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // FCM SDK (and your app) can post notifications.
+                } else {
+                    // TODO: Inform user that that your app will not show notifications.
+                }
+            });
 
     @Override
     protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {

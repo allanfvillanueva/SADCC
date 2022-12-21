@@ -47,10 +47,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
 
 
-public class ClientFeedbackActivity extends  AppCompatActivity  { 
-	
+public class ClientFeedbackActivity extends  AppCompatActivity  {
+
 	private FirebaseDatabase _firebase = FirebaseDatabase.getInstance();
-	
+
 	private String userid = "";
 	private String appointment_id = "";
 	private  DatabaseReference appdb;
@@ -65,7 +65,7 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 	private String fname = "";
 	private String first_letter = "";
 	private String last_letter = "";
-	
+
 	private LinearLayout main;
 	private LinearLayout header;
 	private LinearLayout linear1;
@@ -76,7 +76,7 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 	private RatingBar rb;
 	private EditText tbFeedback;
 	private Button btnSubmit;
-	
+
 	private FirebaseAuth fbauth;
 	private OnCompleteListener<Void> fbauth_updateEmailListener;
 	private OnCompleteListener<Void> fbauth_updatePasswordListener;
@@ -102,9 +102,9 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
-	
+
 	private void initialize(Bundle _savedInstanceState) {
-		
+
 		main = (LinearLayout) findViewById(R.id.main);
 		header = (LinearLayout) findViewById(R.id.header);
 		linear1 = (LinearLayout) findViewById(R.id.linear1);
@@ -116,14 +116,14 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 		tbFeedback = (EditText) findViewById(R.id.tbFeedback);
 		btnSubmit = (Button) findViewById(R.id.btnSubmit);
 		fbauth = FirebaseAuth.getInstance();
-		
+
 		btnExit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
 				finish();
 			}
 		});
-		
+
 		rb.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
 			@Override
 			public void onRatingChanged(RatingBar _ratingBar, float _value, boolean _fromUser){
@@ -132,7 +132,7 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 				}
 			}
 		});
-		
+
 		btnSubmit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
@@ -153,46 +153,46 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 				dbfeedback.child(feedback_id).updateChildren(feedback);
 			}
 		});
-		
+
 		_dbstars_child_listener = new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildChanged(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildMoved(DataSnapshot _param1, String _param2) {
-				
+
 			}
-			
+
 			@Override
 			public void onChildRemoved(DataSnapshot _param1) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError _param1) {
 				final int _errorCode = _param1.getCode();
 				final String _errorMessage = _param1.getMessage();
-				
+
 			}
 		};
 		dbstars.addChildEventListener(_dbstars_child_listener);
-		
+
 		_dbfeedback_child_listener = new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot _param1, String _param2) {
@@ -204,220 +204,219 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 					finish();
 				}
 			}
-			
+
 			@Override
 			public void onChildChanged(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildMoved(DataSnapshot _param1, String _param2) {
-				
+
 			}
-			
+
 			@Override
 			public void onChildRemoved(DataSnapshot _param1) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError _param1) {
 				final int _errorCode = _param1.getCode();
 				final String _errorMessage = _param1.getMessage();
-				
+
 			}
 		};
 		dbfeedback.addChildEventListener(_dbfeedback_child_listener);
-		
+
 		_dbaccount_child_listener = new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildChanged(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildMoved(DataSnapshot _param1, String _param2) {
-				
+
 			}
-			
+
 			@Override
 			public void onChildRemoved(DataSnapshot _param1) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError _param1) {
 				final int _errorCode = _param1.getCode();
 				final String _errorMessage = _param1.getMessage();
-				
+
 			}
 		};
 		dbaccount.addChildEventListener(_dbaccount_child_listener);
-		
+
 		fbauth_updateEmailListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_updatePasswordListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_emailVerificationSentListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_deleteUserListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_phoneAuthListener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> task){
 				final boolean _success = task.isSuccessful();
 				final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_updateProfileListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_googleSignInListener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> task){
 				final boolean _success = task.isSuccessful();
 				final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		_fbauth_create_user_listener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		_fbauth_sign_in_listener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		_fbauth_reset_password_listener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
-				
+
 			}
 		};
 	}
-	
+
 	private void initializeLogic() {
 		_design();
 		rb.setNumStars((int)5);
 		rb.setStepSize((float)1);
 		rb.setRating((float)1);
-		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		appointment_id = getIntent().getStringExtra("appointment_id");
 		appdb = _firebase.getReference("appointments/" + userid);
 		appdb.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot _dataSnapshot) {
-						appdbss = _dataSnapshot;
-				}
-				@Override
-				public void onCancelled(DatabaseError _databaseError) {
-				}
+			@Override
+			public void onDataChange(DataSnapshot _dataSnapshot) {
+				appdbss = _dataSnapshot;
+			}
+			@Override
+			public void onCancelled(DatabaseError _databaseError) {
+			}
 		});
 		dbstars.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot _dataSnapshot) {
-						starsSnapShot = _dataSnapshot;
-				}
-				@Override
-				public void onCancelled(DatabaseError _databaseError) {
-				}
+			@Override
+			public void onDataChange(DataSnapshot _dataSnapshot) {
+				starsSnapShot = _dataSnapshot;
+			}
+			@Override
+			public void onCancelled(DatabaseError _databaseError) {
+			}
 		});
 		dbaccount.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot _dataSnapshot) {
-						Map<String,Object> AccountDataMap = (Map<String,Object>) _dataSnapshot.child(userid).getValue();
+			@Override
+			public void onDataChange(DataSnapshot _dataSnapshot) {
+				Map<String,Object> AccountDataMap = (Map<String,Object>) _dataSnapshot.child(userid).getValue();
 				fname = AccountDataMap.get("fname").toString().toUpperCase();
 				first_letter = fname.substring((int)(0), (int)(1));
 				last_letter = fname.substring((int)(fname.length() - 1), (int)(fname.length()));
 				fname = first_letter + "***" + last_letter;
-				}
-				@Override
-				public void onCancelled(DatabaseError _databaseError) {
-				}
+			}
+			@Override
+			public void onCancelled(DatabaseError _databaseError) {
+			}
 		});
 	}
-	
+
 	@Override
 	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
-		
+
 		super.onActivityResult(_requestCode, _resultCode, _data);
-		
+
 		switch (_requestCode) {
-			
+
 			default:
-			break;
+				break;
 		}
 	}
-	
+
 	public void _design () {
 		android.graphics.drawable.GradientDrawable tbFeedback_design = new android.graphics.drawable.GradientDrawable();
 		tbFeedback_design.setColor(0xFFFFFFFF);
@@ -438,73 +437,73 @@ public class ClientFeedbackActivity extends  AppCompatActivity  {
 		android.graphics.drawable.RippleDrawable btnSubmit_re = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ 0xFFFCE4EC }), btnSubmit_design, null);
 		btnSubmit.setBackground(btnSubmit_re);
 	}
-	
-	
+
+
 	public void _RecordStar (final String _count) {
 		dbstars.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot _dataSnapshot) {
-						starsSnapShot = _dataSnapshot;
+			@Override
+			public void onDataChange(DataSnapshot _dataSnapshot) {
+				starsSnapShot = _dataSnapshot;
 				currentStarCount = Double.parseDouble(starsSnapShot.child("rate" + _count).child("count_rate").getValue().toString());
 				currentStarCount++;
 				dbstars.child("rate" + _count).child("count_rate").setValue(String.valueOf((long)(currentStarCount)));
-				}
-				@Override
-				public void onCancelled(DatabaseError _databaseError) {
-				}
+			}
+			@Override
+			public void onCancelled(DatabaseError _databaseError) {
+			}
 		});
 	}
-	
-	
+
+
 	@Deprecated
 	public void showMessage(String _s) {
 		Toast.makeText(getApplicationContext(), _s, Toast.LENGTH_SHORT).show();
 	}
-	
+
 	@Deprecated
 	public int getLocationX(View _v) {
 		int _location[] = new int[2];
 		_v.getLocationInWindow(_location);
 		return _location[0];
 	}
-	
+
 	@Deprecated
 	public int getLocationY(View _v) {
 		int _location[] = new int[2];
 		_v.getLocationInWindow(_location);
 		return _location[1];
 	}
-	
+
 	@Deprecated
 	public int getRandom(int _min, int _max) {
 		Random random = new Random();
 		return random.nextInt(_max - _min + 1) + _min;
 	}
-	
+
 	@Deprecated
 	public ArrayList<Double> getCheckedItemPositionsToArray(ListView _list) {
 		ArrayList<Double> _result = new ArrayList<Double>();
 		SparseBooleanArray _arr = _list.getCheckedItemPositions();
 		for (int _iIdx = 0; _iIdx < _arr.size(); _iIdx++) {
 			if (_arr.valueAt(_iIdx))
-			_result.add((double)_arr.keyAt(_iIdx));
+				_result.add((double)_arr.keyAt(_iIdx));
 		}
 		return _result;
 	}
-	
+
 	@Deprecated
 	public float getDip(int _input){
 		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, _input, getResources().getDisplayMetrics());
 	}
-	
+
 	@Deprecated
 	public int getDisplayWidthPixels(){
 		return getResources().getDisplayMetrics().widthPixels;
 	}
-	
+
 	@Deprecated
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
 }

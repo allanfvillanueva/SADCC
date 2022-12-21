@@ -194,6 +194,9 @@ public class VerificationAreaActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.verification_area);
 		initialize(_savedInstanceState);
+
+		Log.d("av","VerificationAreaActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED
 		|| ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
@@ -680,8 +683,7 @@ public class VerificationAreaActivity extends  AppCompatActivity  {
 		fbdb.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot _dataSnapshot) {
-						//getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-						getAccountId = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
+					getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				tbEmail.setText(AccountInfoMap.get("email").toString());
 				if (_dataSnapshot.child(getAccountId).child("verified").getValue().toString().equals("1")) {
@@ -834,7 +836,7 @@ public class VerificationAreaActivity extends  AppCompatActivity  {
 		SparseBooleanArray _arr = _list.getCheckedItemPositions();
 		for (int _iIdx = 0; _iIdx < _arr.size(); _iIdx++) {
 			if (_arr.valueAt(_iIdx))
-			_result.add((double)_arr.keyAt(_iIdx));
+				_result.add((double)_arr.keyAt(_iIdx));
 		}
 		return _result;
 	}

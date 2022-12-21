@@ -54,6 +54,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.bumptech.glide.Glide;
 import java.text.DecimalFormat;
+
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -136,6 +138,9 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.client_make_appointment);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ClienMakeAppointmentActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -202,6 +207,12 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 					SketchwareUtil.showMessage(getApplicationContext(), "Please enter your contact number");
 					return;
 				}
+
+				DatabaseReference mDatabase;
+				mDatabase = FirebaseDatabase.getInstance().getReference("appointments");
+
+
+
 				appointment_str = appointmentdb.push().getKey();
 				newAppointment = true;
 				appointmentMap = new HashMap<>();
@@ -224,6 +235,8 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 				pd.show();
 				_deleteSelectedItem();
 				_Logs(u_fullname + " set an appointment " + "" + tbdate.getText().toString() + " " + time.getText().toString());
+
+				sendPushNotification("SADCC","You set an appointment on " + "" + tbdate.getText().toString() + " " + time.getText().toString());
 			}
 		});
 		
@@ -394,13 +407,39 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 			}
 		};
 	}
+
+	private void sendPushNotification(String title, String message) {
+		String channel_id = "notification_channel";
+
+		// Create a Builder object using NotificationCompat
+		// class. This will allow control over all the flags
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
+				.setSmallIcon(R.drawable.app_icon)
+				.setAutoCancel(true)
+				.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+				.setOnlyAlertOnce(true);
+
+		builder.setContentTitle(title).setContentText(message).setSmallIcon(R.drawable.app_icon);
+		// Create an object of NotificationManager class to
+		// notify the
+		// user of events that happen in the background.
+		NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// Check if the Android Version is greater than Oreo
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel notificationChannel = new NotificationChannel(channel_id, "web_app", NotificationManager.IMPORTANCE_HIGH);
+			notificationManager.createNotificationChannel(notificationChannel);
+		}
+
+		int oneTimeID = (int) SystemClock.uptimeMillis();
+		notificationManager.notify(oneTimeID, builder.build());
+	}
 	
 	private void initializeLogic() {
 		_design();
 		pd = new ProgressDialog(ClientMakeAppointmentActivity.this);
 		newAppointment = false;
-		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		SelectedItemString = getIntent().getStringExtra("selected_item");
 		selectedItemListMap = new Gson().fromJson(SelectedItemString, new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
 		_GetTotalItemSelected();

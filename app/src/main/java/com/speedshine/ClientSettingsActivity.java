@@ -146,6 +146,9 @@ public class ClientSettingsActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.client_settings);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ClientSettingsActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
 		|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
@@ -453,8 +456,7 @@ public class ClientSettingsActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		_design();
-		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		dbaccount.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot _dataSnapshot) {

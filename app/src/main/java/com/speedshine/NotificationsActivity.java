@@ -97,6 +97,9 @@ public class NotificationsActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.notifications);
 		initialize(_savedInstanceState);
+
+		Log.d("av","NotificationsActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -340,8 +343,7 @@ public class NotificationsActivity extends  AppCompatActivity  {
 		dbaccount.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot _dataSnapshot) {
-					//getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-					getAccountId = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
+					getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				if (AccountInfoMap.containsKey("account_type")) {
 					if (AccountInfoMap.get("account_type").toString().equals("3")) {
@@ -536,7 +538,7 @@ public class NotificationsActivity extends  AppCompatActivity  {
 		SparseBooleanArray _arr = _list.getCheckedItemPositions();
 		for (int _iIdx = 0; _iIdx < _arr.size(); _iIdx++) {
 			if (_arr.valueAt(_iIdx))
-			_result.add((double)_arr.keyAt(_iIdx));
+				_result.add((double)_arr.keyAt(_iIdx));
 		}
 		return _result;
 	}

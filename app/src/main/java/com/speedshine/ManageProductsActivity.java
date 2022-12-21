@@ -89,6 +89,9 @@ public class ManageProductsActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.manage_products);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ManageProductActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}

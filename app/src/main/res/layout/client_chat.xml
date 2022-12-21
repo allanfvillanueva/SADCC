@@ -52,20 +52,23 @@
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:orientation="vertical">
+
 				<LinearLayout
 					android:id="@+id/boxChat"
 					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical"
-					android:layout_weight="1">
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:orientation="vertical">
+
 					<ListView
 						android:id="@+id/lv"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
+						android:autoLink="web"
 						android:background="#FFFFFF"
-						android:dividerHeight="0dp"
+						android:choiceMode="none"
 						android:divider="@null"
-						android:choiceMode="none"/>
+						android:dividerHeight="0dp" />
 				</LinearLayout>
 				<LinearLayout
 					android:id="@+id/boxChatControl"

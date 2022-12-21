@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
+
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.*;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -173,6 +175,9 @@ public class ClientViewProductActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.client_view_product);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ClientViewProductActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -289,6 +294,7 @@ public class ClientViewProductActivity extends  AppCompatActivity  {
 		btnLike.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
+				sendPushNotification("SADCC","You liked this item - " + unit_name.getText().toString());
 				reactsdb.addListenerForSingleValueEvent(new ValueEventListener() {
 						@Override
 						public void onDataChange(DataSnapshot _dataSnapshot) {
@@ -335,6 +341,7 @@ public class ClientViewProductActivity extends  AppCompatActivity  {
 		btnDislike.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
+				sendPushNotification("SADCC","You disliked this item - " + unit_name.getText().toString());
 				reactsdb.addListenerForSingleValueEvent(new ValueEventListener() {
 						@Override
 						public void onDataChange(DataSnapshot _dataSnapshot) {
@@ -414,6 +421,7 @@ public class ClientViewProductActivity extends  AppCompatActivity  {
 							addItemsToCartMap.put("quantity", tbQty.getText().toString());
 							cartdb.child(unique_id).updateChildren(addItemsToCartMap);
 							_Logs(u_fullname + " added this item " + unitStr + " x " + tbQty.getText().toString() + " to his/her cart.");
+							sendPushNotification("SADCC","You added this item " + unitStr + " x " + tbQty.getText().toString() + " to your cart.");
 						}
 						}
 						@Override
@@ -683,6 +691,33 @@ public class ClientViewProductActivity extends  AppCompatActivity  {
 				
 			}
 		};
+	}
+
+	private void sendPushNotification(String title, String message) {
+		String channel_id = "notification_channel";
+
+		// Create a Builder object using NotificationCompat
+		// class. This will allow control over all the flags
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
+				.setSmallIcon(R.drawable.app_icon)
+				.setAutoCancel(true)
+				.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+				.setOnlyAlertOnce(true);
+
+		builder.setContentTitle(title).setContentText(message).setSmallIcon(R.drawable.app_icon);
+		// Create an object of NotificationManager class to
+		// notify the
+		// user of events that happen in the background.
+		NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// Check if the Android Version is greater than Oreo
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel notificationChannel = new NotificationChannel(channel_id, "web_app", NotificationManager.IMPORTANCE_HIGH);
+			notificationManager.createNotificationChannel(notificationChannel);
+		}
+
+		int oneTimeID = (int) SystemClock.uptimeMillis();
+		notificationManager.notify(oneTimeID, builder.build());
 	}
 	
 	private void initializeLogic() {

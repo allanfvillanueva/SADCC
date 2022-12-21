@@ -99,6 +99,9 @@ public class AdminViewChatsActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.admin_view_chats);
 		initialize(_savedInstanceState);
+
+		Log.d("av","AdminViewChatsActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}

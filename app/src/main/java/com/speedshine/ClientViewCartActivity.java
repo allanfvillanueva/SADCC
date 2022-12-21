@@ -59,6 +59,8 @@ import com.google.gson.Gson;
 import com.bumptech.glide.Glide;
 import java.text.DecimalFormat;
 import com.google.gson.reflect.TypeToken;
+
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -135,6 +137,9 @@ public class ClientViewCartActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.client_view_cart);
 		initialize(_savedInstanceState);
+
+		Log.d("av","ClientViewCartActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
@@ -354,8 +359,7 @@ public class ClientViewCartActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		_design();
-		//userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-		userid = "uhrzwFpnfmWN6lQCWsu4HkPEee12"; //FirebaseAuth.getInstance().getCurrentUser().getUid();
+		userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		cartdb = _firebase.getReference("carts/" + userid);
 		_loadFirebase();
 	}
@@ -684,6 +688,7 @@ public class ClientViewCartActivity extends  AppCompatActivity  {
 				@Override
 				public void onClick(View _view) {
 					_updateCartQty(_data.get((int)_position).get("product_id").toString(), true);
+
 				}
 			});
 			btnRemove.setOnClickListener(new View.OnClickListener() {
@@ -715,6 +720,32 @@ public class ClientViewCartActivity extends  AppCompatActivity  {
 			
 			return _view;
 		}
+	}
+
+	private void sendPushNotification(String title, String message) {
+		String channel_id = "notification_channel";
+
+		// Create a Builder object using NotificationCompat
+		// class. This will allow control over all the flags
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
+				.setSmallIcon(R.drawable.app_icon)
+				.setAutoCancel(true)
+				.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+				.setOnlyAlertOnce(true);
+
+		builder.setContentTitle(title).setContentText(message).setSmallIcon(R.drawable.app_icon);
+		// Create an object of NotificationManager class to
+		// notify the
+		// user of events that happen in the background.
+		NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// Check if the Android Version is greater than Oreo
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel notificationChannel = new NotificationChannel(channel_id, "web_app", NotificationManager.IMPORTANCE_HIGH);
+			notificationManager.createNotificationChannel(notificationChannel);
+		}
+
+		notificationManager.notify(0, builder.build());
 	}
 	
 	@Deprecated

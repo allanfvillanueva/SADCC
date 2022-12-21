@@ -2,8 +2,6 @@ package com.speedshine;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.*;
-
-import android.annotation.SuppressLint;
 import android.app.*;
 import android.os.*;
 import android.view.*;
@@ -30,6 +28,8 @@ import java.util.ArrayList;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
+
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.*;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -67,22 +67,22 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
 
 
-public class ShopActivity extends  AppCompatActivity  { 
-	
+public class ShopActivity extends  AppCompatActivity  {
+
 	public final int REQ_CD_GL = 101;
 	private Timer _timer = new Timer();
 	private FirebaseDatabase _firebase = FirebaseDatabase.getInstance();
-	
+
 	private  GoogleSignInOptions gso;
 	private String getAccountId = "";
 	private HashMap<String, Object> AccountInfoMap = new HashMap<>();
 	private double a = 0;
-	
+
 	private ArrayList<HashMap<String, Object>> accountslistmap = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> hotWheelsMapList = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> bestPriceMapList = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> trendingMapList = new ArrayList<>();
-	
+
 	private LinearLayout main;
 	private LinearLayout header;
 	private LinearLayout body;
@@ -102,7 +102,7 @@ public class ShopActivity extends  AppCompatActivity  {
 	private RecyclerView rv_bestprice;
 	private TextView textview4;
 	private RecyclerView rv_trending;
-	
+
 	private FirebaseAuth fbauth;
 	private OnCompleteListener<Void> fbauth_updateEmailListener;
 	private OnCompleteListener<Void> fbauth_updatePasswordListener;
@@ -127,20 +127,12 @@ public class ShopActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.shop);
 		initialize(_savedInstanceState);
-
-		//bypassFirebase();
-
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
 
-	private void bypassFirebase() {
-		_design();
-		_loadHotWheelsDB();
-	}
-	
 	private void initialize(Bundle _savedInstanceState) {
-		
+
 		main = (LinearLayout) findViewById(R.id.main);
 		header = (LinearLayout) findViewById(R.id.header);
 		body = (LinearLayout) findViewById(R.id.body);
@@ -161,7 +153,7 @@ public class ShopActivity extends  AppCompatActivity  {
 		textview4 = (TextView) findViewById(R.id.textview4);
 		rv_trending = (RecyclerView) findViewById(R.id.rv_trending);
 		fbauth = FirebaseAuth.getInstance();
-		
+
 		btnSearch.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
@@ -169,7 +161,7 @@ public class ShopActivity extends  AppCompatActivity  {
 				startActivity(i);
 			}
 		});
-		
+
 		btnCart.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
@@ -177,14 +169,15 @@ public class ShopActivity extends  AppCompatActivity  {
 				startActivity(i);
 			}
 		});
-		
+
 		btnNotifications.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
-				SketchwareUtil.showMessage(getApplicationContext(), "Working on it!!!");
+				//SketchwareUtil.showMessage(getApplicationContext(), "Working on it!!!");
+				sendPushNotification("SADCC","We're currently working on push notification.");
 			}
 		});
-		
+
 		btnProfile.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
@@ -193,37 +186,37 @@ public class ShopActivity extends  AppCompatActivity  {
 				finish();
 			}
 		});
-		
+
 		_fbdb_child_listener = new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildChanged(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildMoved(DataSnapshot _param1, String _param2) {
-				
+
 			}
-			
+
 			@Override
 			public void onChildRemoved(DataSnapshot _param1) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError _param1) {
 				final int _errorCode = _param1.getCode();
@@ -232,16 +225,16 @@ public class ShopActivity extends  AppCompatActivity  {
 			}
 		};
 		fbdb.addChildEventListener(_fbdb_child_listener);
-		
+
 		_dbdb_products_child_listener = new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onChildChanged(DataSnapshot _param1, String _param2) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
@@ -249,119 +242,146 @@ public class ShopActivity extends  AppCompatActivity  {
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
 				_loadHotWheelsDB();
 			}
-			
+
 			@Override
 			public void onChildMoved(DataSnapshot _param1, String _param2) {
-				
+
 			}
-			
+
 			@Override
 			public void onChildRemoved(DataSnapshot _param1) {
 				GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
 				final String _childKey = _param1.getKey();
 				final HashMap<String, Object> _childValue = _param1.getValue(_ind);
-				
+
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError _param1) {
 				final int _errorCode = _param1.getCode();
 				final String _errorMessage = _param1.getMessage();
-				
+
 			}
 		};
 		dbdb_products.addChildEventListener(_dbdb_products_child_listener);
-		
+
 		fbauth_updateEmailListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_updatePasswordListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_emailVerificationSentListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_deleteUserListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_phoneAuthListener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> task){
 				final boolean _success = task.isSuccessful();
 				final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_updateProfileListener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		fbauth_googleSignInListener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> task){
 				final boolean _success = task.isSuccessful();
 				final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		_fbauth_create_user_listener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		_fbauth_sign_in_listener = new OnCompleteListener<AuthResult>() {
 			@Override
 			public void onComplete(Task<AuthResult> _param1) {
 				final boolean _success = _param1.isSuccessful();
 				final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-				
+
 			}
 		};
-		
+
 		_fbauth_reset_password_listener = new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(Task<Void> _param1) {
 				final boolean _success = _param1.isSuccessful();
-				
+
 			}
 		};
 	}
-	
+
+	private void sendPushNotification(String title, String message) {
+		String channel_id = "notification_channel";
+
+		// Create a Builder object using NotificationCompat
+		// class. This will allow control over all the flags
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
+				.setSmallIcon(R.drawable.app_icon)
+				.setAutoCancel(true)
+				.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+				.setOnlyAlertOnce(true);
+
+		builder.setContentTitle(title).setContentText(message).setSmallIcon(R.drawable.app_icon);
+		// Create an object of NotificationManager class to
+		// notify the
+		// user of events that happen in the background.
+		NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// Check if the Android Version is greater than Oreo
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel notificationChannel = new NotificationChannel(channel_id, "web_app", NotificationManager.IMPORTANCE_HIGH);
+			notificationManager.createNotificationChannel(notificationChannel);
+		}
+
+		int oneTimeID = (int) SystemClock.uptimeMillis();
+		notificationManager.notify(oneTimeID, builder.build());
+	}
+
 	private void initializeLogic() {
 		// Initialize Progress Dialog
 		pd = new ProgressDialog(ShopActivity.this);
@@ -371,9 +391,9 @@ public class ShopActivity extends  AppCompatActivity  {
 		pd.show();
 		// Firebase Load
 		fbdb.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot _dataSnapshot) {
-						getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+			@Override
+			public void onDataChange(DataSnapshot _dataSnapshot) {
+				getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				if (AccountInfoMap.containsKey("account_type")) {
 					if (AccountInfoMap.get("account_type").toString().equals("3") && (AccountInfoMap.get("verified").toString().equals("0") || AccountInfoMap.get("verified").toString().equals("1"))) {
@@ -391,10 +411,10 @@ public class ShopActivity extends  AppCompatActivity  {
 				else {
 					fbdb.child(getAccountId).child("account_type").setValue("3");
 				}
-				}
-				@Override
-				public void onCancelled(DatabaseError _databaseError) {
-				}
+			}
+			@Override
+			public void onCancelled(DatabaseError _databaseError) {
+			}
 		});
 		// Initialize GoogleLogin
 		fbauth = FirebaseAuth.getInstance();
@@ -403,19 +423,19 @@ public class ShopActivity extends  AppCompatActivity  {
 		_design();
 		_loadHotWheelsDB();
 	}
-	
+
 	@Override
 	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
-		
+
 		super.onActivityResult(_requestCode, _resultCode, _data);
-		
+
 		switch (_requestCode) {
-			
+
 			default:
-			break;
+				break;
 		}
 	}
-	
+
 	public void _design () {
 		android.graphics.drawable.GradientDrawable btnSearch_design = new android.graphics.drawable.GradientDrawable();
 		btnSearch_design.setColor(0xFFDD1D5E);
@@ -442,8 +462,8 @@ public class ShopActivity extends  AppCompatActivity  {
 		android.graphics.drawable.RippleDrawable btnProfile_re = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ 0xFFFCE4EC }), btnProfile_design, null);
 		btnProfile.setBackground(btnProfile_re);
 	}
-	
-	
+
+
 	public void _loadHotwheelsRv () {
 		rv.setAdapter(new RvAdapter(hotWheelsMapList));
 		rv.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false));
@@ -454,8 +474,8 @@ public class ShopActivity extends  AppCompatActivity  {
 		rv_trending.setAdapter(new Rv_trendingAdapter(trendingMapList));
 		rv_trending.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false));
 	}
-	
-	
+
+
 	public void _loadHotWheelsDB () {
 		dbdb_products.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
@@ -480,14 +500,14 @@ public class ShopActivity extends  AppCompatActivity  {
 			}
 		});
 	}
-	
-	
+
+
 	public class RvAdapter extends RecyclerView.Adapter<RvAdapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
 		public RvAdapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
 		@Override
 		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 			LayoutInflater _inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -496,11 +516,11 @@ public class ShopActivity extends  AppCompatActivity  {
 			_v.setLayoutParams(_lp);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
 		public void onBindViewHolder(ViewHolder _holder, final int _position) {
 			View _view = _holder.itemView;
-			
+
 			final RelativeLayout background = (RelativeLayout) _view.findViewById(R.id.background);
 			final ImageView picture = (ImageView) _view.findViewById(R.id.picture);
 			final LinearLayout info = (LinearLayout) _view.findViewById(R.id.info);
@@ -508,32 +528,32 @@ public class ShopActivity extends  AppCompatActivity  {
 			final LinearLayout linear4 = (LinearLayout) _view.findViewById(R.id.linear4);
 			final TextView unit = (TextView) _view.findViewById(R.id.unit);
 			final TextView textview2 = (TextView) _view.findViewById(R.id.textview2);
-			
+
 			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
 			linear3.setBackgroundColor(0xB5FFFFFF);
 			unit.setText(_data.get((int)_position).get("unit").toString().toUpperCase());
 			textview2.setText(_data.get((int)_position).get("brand").toString());
 		}
-		
+
 		@Override
 		public int getItemCount() {
 			return _data.size();
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder{
 			public ViewHolder(View v){
 				super(v);
 			}
 		}
-		
+
 	}
-	
+
 	public class Rv_bestpriceAdapter extends RecyclerView.Adapter<Rv_bestpriceAdapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
 		public Rv_bestpriceAdapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
 		@Override
 		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 			LayoutInflater _inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -542,11 +562,11 @@ public class ShopActivity extends  AppCompatActivity  {
 			_v.setLayoutParams(_lp);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, @SuppressLint("RecyclerView") final int _position) {
+		public void onBindViewHolder(ViewHolder _holder, final int _position) {
 			View _view = _holder.itemView;
-			
+
 			final LinearLayout main = (LinearLayout) _view.findViewById(R.id.main);
 			final LinearLayout box = (LinearLayout) _view.findViewById(R.id.box);
 			final ImageView picture = (ImageView) _view.findViewById(R.id.picture);
@@ -558,7 +578,7 @@ public class ShopActivity extends  AppCompatActivity  {
 			final TextView like = (TextView) _view.findViewById(R.id.like);
 			final ImageView imageview3 = (ImageView) _view.findViewById(R.id.imageview3);
 			final TextView dislike = (TextView) _view.findViewById(R.id.dislike);
-			
+
 			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			_view.setLayoutParams(_lp);
 			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
@@ -583,26 +603,26 @@ public class ShopActivity extends  AppCompatActivity  {
 				}
 			});
 		}
-		
+
 		@Override
 		public int getItemCount() {
 			return _data.size();
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder{
 			public ViewHolder(View v){
 				super(v);
 			}
 		}
-		
+
 	}
-	
+
 	public class Rv_trendingAdapter extends RecyclerView.Adapter<Rv_trendingAdapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> _data;
 		public Rv_trendingAdapter(ArrayList<HashMap<String, Object>> _arr) {
 			_data = _arr;
 		}
-		
+
 		@Override
 		public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 			LayoutInflater _inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -611,11 +631,11 @@ public class ShopActivity extends  AppCompatActivity  {
 			_v.setLayoutParams(_lp);
 			return new ViewHolder(_v);
 		}
-		
+
 		@Override
-		public void onBindViewHolder(ViewHolder _holder, @SuppressLint("RecyclerView") final int _position) {
+		public void onBindViewHolder(ViewHolder _holder, final int _position) {
 			View _view = _holder.itemView;
-			
+
 			final LinearLayout main = (LinearLayout) _view.findViewById(R.id.main);
 			final LinearLayout box = (LinearLayout) _view.findViewById(R.id.box);
 			final ImageView picture = (ImageView) _view.findViewById(R.id.picture);
@@ -627,7 +647,7 @@ public class ShopActivity extends  AppCompatActivity  {
 			final TextView like = (TextView) _view.findViewById(R.id.like);
 			final ImageView imageview3 = (ImageView) _view.findViewById(R.id.imageview3);
 			final TextView dislike = (TextView) _view.findViewById(R.id.dislike);
-			
+
 			RecyclerView.LayoutParams _lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			_view.setLayoutParams(_lp);
 			Glide.with(getApplicationContext()).load(Uri.parse(_data.get((int)_position).get("thumbnail").toString())).into(picture);
@@ -652,69 +672,69 @@ public class ShopActivity extends  AppCompatActivity  {
 				}
 			});
 		}
-		
+
 		@Override
 		public int getItemCount() {
 			return _data.size();
 		}
-		
+
 		public class ViewHolder extends RecyclerView.ViewHolder{
 			public ViewHolder(View v){
 				super(v);
 			}
 		}
-		
+
 	}
-	
+
 	@Deprecated
 	public void showMessage(String _s) {
 		Toast.makeText(getApplicationContext(), _s, Toast.LENGTH_SHORT).show();
 	}
-	
+
 	@Deprecated
 	public int getLocationX(View _v) {
 		int _location[] = new int[2];
 		_v.getLocationInWindow(_location);
 		return _location[0];
 	}
-	
+
 	@Deprecated
 	public int getLocationY(View _v) {
 		int _location[] = new int[2];
 		_v.getLocationInWindow(_location);
 		return _location[1];
 	}
-	
+
 	@Deprecated
 	public int getRandom(int _min, int _max) {
 		Random random = new Random();
 		return random.nextInt(_max - _min + 1) + _min;
 	}
-	
+
 	@Deprecated
 	public ArrayList<Double> getCheckedItemPositionsToArray(ListView _list) {
 		ArrayList<Double> _result = new ArrayList<Double>();
 		SparseBooleanArray _arr = _list.getCheckedItemPositions();
 		for (int _iIdx = 0; _iIdx < _arr.size(); _iIdx++) {
 			if (_arr.valueAt(_iIdx))
-			_result.add((double)_arr.keyAt(_iIdx));
+				_result.add((double)_arr.keyAt(_iIdx));
 		}
 		return _result;
 	}
-	
+
 	@Deprecated
 	public float getDip(int _input){
 		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, _input, getResources().getDisplayMetrics());
 	}
-	
+
 	@Deprecated
 	public int getDisplayWidthPixels(){
 		return getResources().getDisplayMetrics().widthPixels;
 	}
-	
+
 	@Deprecated
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
 }

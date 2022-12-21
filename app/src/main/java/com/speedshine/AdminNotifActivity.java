@@ -35,6 +35,9 @@ public class AdminNotifActivity extends  AppCompatActivity  {
 		super.onCreate(_savedInstanceState);
 		setContentView(R.layout.admin_notif);
 		initialize(_savedInstanceState);
+
+		Log.d("av","AdminNotifActivity onCreate");
+
 		com.google.firebase.FirebaseApp.initializeApp(this);
 		initializeLogic();
 	}
