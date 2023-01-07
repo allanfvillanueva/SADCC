@@ -42,6 +42,8 @@ import com.google.firebase.database.ChildEventListener;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import android.view.View;
+
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -396,6 +398,7 @@ public class ManageAppointmentActivity extends  AppCompatActivity  {
 				public void onClick(View _view) {
 					_UpdateStatus(_data.get((int)_position).get("userid").toString(), _data.get((int)_position).get("appointment_id").toString(), "Approve");
 					_CreateNotifcation(_data.get((int)_position).get("userid").toString(), "APPOINTMENT", "Your appointment has been approved.");
+					sendPushNotification("SADCC","Customer appointment has been approved.");
 				}
 			});
 			btnDecline.setOnClickListener(new View.OnClickListener() {
@@ -403,6 +406,7 @@ public class ManageAppointmentActivity extends  AppCompatActivity  {
 				public void onClick(View _view) {
 					_UpdateStatus(_data.get((int)_position).get("userid").toString(), _data.get((int)_position).get("appointment_id").toString(), "Decline");
 					_CreateNotifcation(_data.get((int)_position).get("userid").toString(), "APPOINTMENT", "Your appointment has been declined. We are sorry about that.");
+					sendPushNotification("SADCC","Customer appointment has been declined.");
 				}
 			});
 			btnProcess.setOnClickListener(new View.OnClickListener() {
@@ -410,6 +414,7 @@ public class ManageAppointmentActivity extends  AppCompatActivity  {
 				public void onClick(View _view) {
 					_UpdateStatus(_data.get((int)_position).get("userid").toString(), _data.get((int)_position).get("appointment_id").toString(), "Process");
 					_CreateNotifcation(_data.get((int)_position).get("userid").toString(), "APPOINTMENT", "Your appointment was on process.");
+					sendPushNotification("SADCC","Customer appointment was on process.");
 				}
 			});
 			btnDone.setOnClickListener(new View.OnClickListener() {
@@ -417,11 +422,39 @@ public class ManageAppointmentActivity extends  AppCompatActivity  {
 				public void onClick(View _view) {
 					_UpdateStatus(_data.get((int)_position).get("userid").toString(), _data.get((int)_position).get("appointment_id").toString(), "Done");
 					_CreateNotifcation(_data.get((int)_position).get("userid").toString(), "APPOINTMENT", "Your appointment is done.");
+					sendPushNotification("SADCC","Customer appointment was completed.");
 				}
 			});
 			
 			return _view;
 		}
+	}
+
+	private void sendPushNotification(String title, String message) {
+		String channel_id = "notification_channel";
+
+		// Create a Builder object using NotificationCompat
+		// class. This will allow control over all the flags
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
+				.setSmallIcon(R.drawable.app_icon)
+				.setAutoCancel(true)
+				.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+				.setOnlyAlertOnce(true);
+
+		builder.setContentTitle(title).setContentText(message).setSmallIcon(R.drawable.app_icon);
+		// Create an object of NotificationManager class to
+		// notify the
+		// user of events that happen in the background.
+		NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// Check if the Android Version is greater than Oreo
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel notificationChannel = new NotificationChannel(channel_id, "web_app", NotificationManager.IMPORTANCE_HIGH);
+			notificationManager.createNotificationChannel(notificationChannel);
+		}
+
+		int oneTimeID = (int) SystemClock.uptimeMillis();
+		notificationManager.notify(oneTimeID, builder.build());
 	}
 	
 	@Deprecated

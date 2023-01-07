@@ -62,6 +62,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.DialogFragment;
@@ -284,6 +286,7 @@ public class ManageAccountsActivity extends  AppCompatActivity  {
 						}
 						pd.dismiss();
 						SketchwareUtil.showMessage(getApplicationContext(), "This account was successfully deleted!");
+						sendPushNotification("SADCC","An account was successfully deleted!");
 						lv.setAdapter(new LvAdapter(lm_accounts));
 						((BaseAdapter)lv.getAdapter()).notifyDataSetChanged();
 					}
@@ -349,7 +352,34 @@ public class ManageAccountsActivity extends  AppCompatActivity  {
 			}
 		};
 	}
-	
+
+	private void sendPushNotification(String title, String message) {
+		String channel_id = "notification_channel";
+
+		// Create a Builder object using NotificationCompat
+		// class. This will allow control over all the flags
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
+				.setSmallIcon(R.drawable.app_icon)
+				.setAutoCancel(true)
+				.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+				.setOnlyAlertOnce(true);
+
+		builder.setContentTitle(title).setContentText(message).setSmallIcon(R.drawable.app_icon);
+		// Create an object of NotificationManager class to
+		// notify the
+		// user of events that happen in the background.
+		NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// Check if the Android Version is greater than Oreo
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			NotificationChannel notificationChannel = new NotificationChannel(channel_id, "web_app", NotificationManager.IMPORTANCE_HIGH);
+			notificationManager.createNotificationChannel(notificationChannel);
+		}
+
+		int oneTimeID = (int) SystemClock.uptimeMillis();
+		notificationManager.notify(oneTimeID, builder.build());
+	}
+
 	private void initializeLogic() {
 		_design();
 		pd = new ProgressDialog(ManageAccountsActivity.this);

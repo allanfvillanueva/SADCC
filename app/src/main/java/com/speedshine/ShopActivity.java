@@ -174,7 +174,10 @@ public class ShopActivity extends  AppCompatActivity  {
 			@Override
 			public void onClick(View _view) {
 				//SketchwareUtil.showMessage(getApplicationContext(), "Working on it!!!");
-				sendPushNotification("SADCC","We're currently working on push notification.");
+				//sendPushNotification("SADCC","We're currently working on push notification.");
+
+				i.setClass(getApplicationContext(), ClientNotificationsActivity.class);
+				startActivity(i);
 			}
 		});
 

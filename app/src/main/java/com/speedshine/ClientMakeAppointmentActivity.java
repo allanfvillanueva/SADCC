@@ -133,6 +133,68 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 	private TimerTask tmr;
 	private DatabaseReference dbNotifAdmin = _firebase.getReference("notif_admin");
 	private ChildEventListener _dbNotifAdmin_child_listener;
+
+	private DatabaseReference fbappointments = _firebase.getReference("appointments");
+	private ChildEventListener _fbappointments_child_listener;
+
+	private double index = 0;
+	private double length = 0;
+	private double index1 = 0;
+	private double length1 = 0;
+	private ArrayList<HashMap<String, Object>> appointmentslm = new ArrayList<>();
+	private ArrayList<HashMap<String, Object>> allappointmentlm = new ArrayList<>();
+	private ArrayList<HashMap<String, Object>> appointmentlm = new ArrayList<>();
+	private ArrayList<String> appointmapliststring = new ArrayList<>();
+
+	public void _loadAllAppointments () {
+		fbappointments.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot _dataSnapshot) {
+				appointmentslm = new ArrayList<>();
+				try {
+					GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
+					for (DataSnapshot _data : _dataSnapshot.getChildren()) {
+						HashMap<String, Object> _map = _data.getValue(_ind);
+						appointmentslm.add(_map);
+						Log.d("av","loadAllApointments appointmentslm.size()=" + appointmentslm.size());
+					}
+				}
+				catch (Exception _e) {
+					_e.printStackTrace();
+				}
+				allappointmentlm.clear();
+				index = 0;
+				length = appointmentslm.size();
+				for(int _repeat14 = 0; _repeat14 < (int)(length); _repeat14++) {
+					appointmapliststring.clear();
+					SketchwareUtil.getAllKeysFromMap(appointmentslm.get((int)(index)), appointmapliststring);
+					index1 = 0;
+					length1 = appointmapliststring.size();
+
+					Log.d("av","loadAllApointments appointmapliststring.size()=" + appointmapliststring.size());
+
+					for(int _repeat31 = 0; _repeat31 < (int)(length1); _repeat31++) {
+						allappointmentlm.add((HashMap<String,Object>)appointmentslm.get((int)(index)).get(appointmapliststring.get((int)(index1))));
+
+						index1++;
+					}
+					index++;
+				}
+
+				for(int index3 = 0; index3 < (int)(allappointmentlm.size()); index3++) {
+					Log.d("av","loadAllApointments " + allappointmentlm.get((int)(index3)).get("date").toString().toUpperCase() + " " + allappointmentlm.get((int)(index3)).get("time").toString().toUpperCase());
+				}
+
+				//datetime.setText(_data.get((int)_position).get("date").toString().toUpperCase() + " " + _data.get((int)_position).get("time").toString().toUpperCase());
+				//lv.setAdapter(new ManageAppointmentActivity.LvAdapter(allappointmentlm));
+				//((BaseAdapter)lv.getAdapter()).notifyDataSetChanged();
+			}
+			@Override
+			public void onCancelled(DatabaseError _databaseError) {
+			}
+		});
+	}
+
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
@@ -142,6 +204,8 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 		Log.d("av","ClienMakeAppointmentActivity onCreate");
 
 		com.google.firebase.FirebaseApp.initializeApp(this);
+
+		_loadAllAppointments();
 		initializeLogic();
 	}
 	
@@ -190,8 +254,6 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 			@Override
 			public void onClick(View _view) {
 				DialogFragment newFragment = new TimePickerFragment();
-				
-				
 				newFragment.show(getSupportFragmentManager(), "timePicker");
 			}
 		});
@@ -206,6 +268,18 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 				if (tbCnum.getText().toString().equals("")) {
 					SketchwareUtil.showMessage(getApplicationContext(), "Please enter your contact number");
 					return;
+				}
+
+				Log.d("av", "date=" + tbdate.getText().toString());
+				Log.d("av", "time=" + time.getText().toString());
+
+				for(int i = 0; i < (int)(allappointmentlm.size()); i++) {
+					Log.d("av",allappointmentlm.get((int)(i)).get("date").toString().toUpperCase() + " " + allappointmentlm.get((int)(i)).get("time").toString().toUpperCase());
+
+					if(tbdate.getText().toString().toUpperCase().equals(allappointmentlm.get((int)(i)).get("date").toString().toUpperCase()) && time.getText().toString().toUpperCase().equals(allappointmentlm.get((int)(i)).get("time").toString().toUpperCase())) {
+						SketchwareUtil.showMessage(getApplicationContext(), "Your appointment date was not available and already booked by another client.");
+						return;
+					}
 				}
 
 				DatabaseReference mDatabase;
@@ -475,9 +549,22 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 			return new TimePickerDialog(getActivity(), this, hour, minute, android.text.format.DateFormat.is24HourFormat(getActivity()));
 		}
 		
-		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+		public void onTimeSet(TimePicker view, int _hour, int _minute) {
 			TextView textview101 = getActivity().findViewById(R.id.time);
-			textview101.setText(hourOfDay + ":" + minute);
+
+			String strHour = "";
+			String strMinute = String.valueOf(100 + _minute);
+
+			if(_hour>12) {
+				int _hour12 = _hour - 12;
+				strHour = String.valueOf(100 + _hour12);
+				textview101.setText(strHour.substring(1) + ":" + strMinute.substring(1) + " PM");
+			}
+			else {
+				strHour = String.valueOf(100 + _hour);
+				textview101.setText(strHour.substring(1) + ":" + strMinute.substring(1) + " AM");
+			}
+
 		}
 	}
 	
@@ -496,7 +583,7 @@ public class ClientMakeAppointmentActivity extends  AppCompatActivity  {
 		}
 		public void onDateSet(DatePicker view, int year, int month, int day) {
 			int mon = month +1;
-			String date = year + "-" + mon + "-" + day;
+			String date = year + "-" + String.valueOf(100 + mon).substring(1) + "-" + String.valueOf(100 + day).substring(1);
 			TextView edittext1 = (TextView) getActivity().findViewById(R.id.tbdate);
 			edittext1.setText(date);
 		}
