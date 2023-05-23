@@ -413,7 +413,7 @@ public class ClientNotificationsActivity extends  AppCompatActivity {
                         Log.d("av",clientName);
 
                 if (AccountInfoMap.containsKey("account_type")) {
-                    if (AccountInfoMap.get("account_type").toString().equals("3")) {
+                    if (AccountInfoMap.get("account_type").toString().equals("2") || AccountInfoMap.get("account_type").toString().equals("3")) {
                         //SketchwareUtil.showMessage(getApplicationContext(), "Under maintenance");
                         _LoadAllNotification(true, getAccountId);
                     }

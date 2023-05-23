@@ -567,7 +567,7 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			public void onDataChange(DataSnapshot _dataSnapshot) {
 				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				if (AccountInfoMap.containsKey("account_type")) {
-					if (AccountInfoMap.get("account_type").toString().equals("3")) {
+					if (AccountInfoMap.get("account_type").toString().equals("2") || AccountInfoMap.get("account_type").toString().equals("3")) {
 						userid = getAccountId;
 						senderId = getAccountId;
 						lblName.setText("SADCC SUPPORT");
@@ -638,7 +638,7 @@ public class ClientChatActivity extends  AppCompatActivity  {
 			case REQ_CD_FP:
 				if (_resultCode == Activity.RESULT_OK) {
 
-					Log.d("avrepos","onActivityResult _data.getData()" + _data.getData());
+					Log.d("av","onActivityResult _data.getData()" + _data.getData());
 					ArrayList<String> _filePath = new ArrayList<>();
 
 

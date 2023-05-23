@@ -1,5 +1,8 @@
 package com.speedshine;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.*;
 import android.app.*;
@@ -142,6 +145,7 @@ public class AccountActivity extends  AppCompatActivity  {
 	private Calendar c = Calendar.getInstance();
 	private GoogleSignInClient gl;
 	private Intent i = new Intent();
+
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
@@ -221,6 +225,7 @@ public class AccountActivity extends  AppCompatActivity  {
 				Log.d("av","btnGoogleLogin.setOnClickListener");
 
 				Intent signInIntent = gl.getSignInIntent();
+
 				startActivityForResult(signInIntent, REQ_CD_GL);
 			}
 		});
@@ -591,7 +596,7 @@ public class AccountActivity extends  AppCompatActivity  {
 				} catch (ApiException e) {
 					// The ApiException status code indicates the detailed failure reason.
 					// Please refer to the GoogleSignInStatusCodes class reference for more information.
-					Log.d("avrepos","LoginActivity signInResult:failed code=" + e.getStatusCode());
+					Log.d("av","LoginActivity signInResult:failed code=" + e.getStatusCode());
 
 				}
 			break;

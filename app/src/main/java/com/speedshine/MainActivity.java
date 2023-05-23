@@ -109,7 +109,7 @@ public class MainActivity extends  AppCompatActivity  {
             public void onComplete(Task<Void> _param1) {
                 final boolean _success = _param1.isSuccessful();
                 final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-
+                Log.d("av",_errorMessage);
             }
         };
 
@@ -118,7 +118,7 @@ public class MainActivity extends  AppCompatActivity  {
             public void onComplete(Task<Void> _param1) {
                 final boolean _success = _param1.isSuccessful();
                 final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-
+                Log.d("av",_errorMessage);
             }
         };
 
@@ -127,7 +127,7 @@ public class MainActivity extends  AppCompatActivity  {
             public void onComplete(Task<AuthResult> task){
                 final boolean _success = task.isSuccessful();
                 final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
-
+                Log.d("av",_errorMessage);
             }
         };
 
@@ -136,7 +136,7 @@ public class MainActivity extends  AppCompatActivity  {
             public void onComplete(Task<Void> _param1) {
                 final boolean _success = _param1.isSuccessful();
                 final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-
+                Log.d("av",_errorMessage);
             }
         };
 
@@ -145,7 +145,7 @@ public class MainActivity extends  AppCompatActivity  {
             public void onComplete(Task<AuthResult> task){
                 final boolean _success = task.isSuccessful();
                 final String _errorMessage = task.getException() != null ? task.getException().getMessage() : "";
-
+                Log.d("av",_errorMessage);
             }
         };
 
@@ -154,7 +154,7 @@ public class MainActivity extends  AppCompatActivity  {
             public void onComplete(Task<AuthResult> _param1) {
                 final boolean _success = _param1.isSuccessful();
                 final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-
+                Log.d("av",_errorMessage);
             }
         };
 
@@ -163,7 +163,7 @@ public class MainActivity extends  AppCompatActivity  {
             public void onComplete(Task<AuthResult> _param1) {
                 final boolean _success = _param1.isSuccessful();
                 final String _errorMessage = _param1.getException() != null ? _param1.getException().getMessage() : "";
-
+                Log.d("av",_errorMessage);
             }
         };
 
@@ -171,6 +171,7 @@ public class MainActivity extends  AppCompatActivity  {
             @Override
             public void onComplete(Task<Void> _param1) {
                 final boolean _success = _param1.isSuccessful();
+                Log.d("av", String.valueOf(_success));
 
             }
         };

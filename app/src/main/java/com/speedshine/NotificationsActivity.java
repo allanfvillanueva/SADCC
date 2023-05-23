@@ -393,6 +393,8 @@ public class NotificationsActivity extends  AppCompatActivity  {
 					catch (Exception _e) {
 						_e.printStackTrace();
 					}
+
+					Log.d("av","isadmin=true notif count=" + String.valueOf(notificationml.size()));
 					lv.setAdapter(new LvAdapter(notificationml));
 					((BaseAdapter)lv.getAdapter()).notifyDataSetChanged();
 				}
@@ -402,28 +404,31 @@ public class NotificationsActivity extends  AppCompatActivity  {
 			});
 		}
 		else {
-			notifdb = _firebase.getReference("notification/" + _userid);
-			notifdb.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot _dataSnapshot) {
-					notificationml = new ArrayList<>();
-					try {
-						GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
-						for (DataSnapshot _data : _dataSnapshot.getChildren()) {
-							HashMap<String, Object> _map = _data.getValue(_ind);
-							notificationml.add(_map);
-						}
-					}
-					catch (Exception _e) {
-						_e.printStackTrace();
-					}
-					lv.setAdapter(new LvAdapter(notificationml));
-					((BaseAdapter)lv.getAdapter()).notifyDataSetChanged();
-				}
-				@Override
-				public void onCancelled(DatabaseError _databaseError) {
-				}
-			});
+
+//			notifdb = _firebase.getReference("notification/" + _userid);
+//			notifdb.addListenerForSingleValueEvent(new ValueEventListener() {
+//				@Override
+//				public void onDataChange(DataSnapshot _dataSnapshot) {
+//					notificationml = new ArrayList<>();
+//					try {
+//						GenericTypeIndicator<HashMap<String, Object>> _ind = new GenericTypeIndicator<HashMap<String, Object>>() {};
+//						for (DataSnapshot _data : _dataSnapshot.getChildren()) {
+//							HashMap<String, Object> _map = _data.getValue(_ind);
+//							notificationml.add(_map);
+//						}
+//					}
+//					catch (Exception _e) {
+//						_e.printStackTrace();
+//					}
+//					Log.d("av","isadmin=false notif count=" + String.valueOf(notificationml.size()));
+//
+//					lv.setAdapter(new LvAdapter(notificationml));
+//					((BaseAdapter)lv.getAdapter()).notifyDataSetChanged();
+//				}
+//				@Override
+//				public void onCancelled(DatabaseError _databaseError) {
+//				}
+//			});
 		}
 	}
 	

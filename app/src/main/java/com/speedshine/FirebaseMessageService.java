@@ -29,7 +29,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage)
     {
-        Log.d("avrepos","onMessageReceived");
+        Log.d("av","onMessageReceived");
         // First case when notifications are received via
         // data event
         // Here, 'title' and 'message' are the assumed names
@@ -46,7 +46,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         // Second case when notification payload is
         // received.
         if (remoteMessage.getNotification() != null) {
-            Log.d("avrepos","remoteMessage.getNotification() != null");
+            Log.d("av","remoteMessage.getNotification() != null");
             // Since the notification is received directly
             // from FCM, the title and the body can be
             // fetched directly as below.
@@ -68,7 +68,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     // Method to display the notifications
     public void showNotification(String title, String message)
     {
-        Log.d("avrepos","showNotification() != null"  + title);
+        Log.d("av","showNotification() != null"  + title);
         // Pass the intent to switch to the MainActivity
         Intent intent = new Intent(this, MainActivity.class);
 

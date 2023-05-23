@@ -604,6 +604,8 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 	public void onResume() {
 		super.onResume();
 		_loadAnalytics();
+		_getAllNotifications();
+		_getAllNoReplyMessages();
 	}
 	
 	@Override
@@ -755,16 +757,16 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 				index = 0;
 				NoReplyMessagesCount = 0;
 				length = AllMessagesLM.size();
-				for(int _repeat17 = 0; _repeat17 < (int)(length); _repeat17++) {
-					SketchwareUtil.getAllKeysFromMap(AllMessagesLM.get((int)(index)), AllMessagesStr);
-					index1 = 0;
-					length1 = AllMessagesStr.size();
-					for(int _repeat26 = 0; _repeat26 < (int)(length1); _repeat26++) {
-						AllMessagesFromUserLm.add((HashMap<String,Object>)AllMessagesLM.get((int)(index)).get(AllMessagesStr.get((int)(index1))));
-						index1++;
-					}
-					index++;
-				}
+//				for(int _repeat17 = 0; _repeat17 < (int)(length); _repeat17++) {
+//					SketchwareUtil.getAllKeysFromMap(AllMessagesLM.get((int)(index)), AllMessagesStr);
+//					index1 = 0;
+//					length1 = AllMessagesStr.size();
+//					for(int _repeat26 = 0; _repeat26 < (int)(length1); _repeat26++) {
+//						AllMessagesFromUserLm.add((HashMap<String,Object>)AllMessagesLM.get((int)(index)).get(AllMessagesStr.get((int)(index1))));
+//						index1++;
+//					}
+//					index++;
+//				}
 				index3 = 0;
 				NoReplyMessagesCount = 0;
 				length3 = AllMessagesFromUserLm.size();
@@ -803,20 +805,20 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 				catch (Exception _e) {
 					_e.printStackTrace();
 				}
-				unreadAdminNotification = 0;
+				unreadAdminNotification = AllNotificationLM.size();
 				index4 = 0;
 				length4 = AllNotificationLM.size();
 				for(int _repeat15 = 0; _repeat15 < (int)(length4); _repeat15++) {
 					if (AllNotificationLM.get((int)index4).containsKey("unread")) {
-						if (AllNotificationLM.get((int)index4).get("unread").toString().equals("true")) {
-							unreadAdminNotification++;
+						if (AllNotificationLM.get((int)index4).get("unread").toString().equals("false")) {
+							unreadAdminNotification--;
 						}
 						else {
-							
+							//unreadAdminNotification--;
 						}
 					}
 					else {
-						unreadAdminNotification++;
+						//unreadAdminNotification++;
 					}
 					index4++;
 				}
