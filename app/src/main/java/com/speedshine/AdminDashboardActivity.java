@@ -75,6 +75,7 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 	private DrawerLayout _drawer;
 	private HashMap<String, Object> AccountInfoMap = new HashMap<>();
 	private String getAccountId = "";
+	private String adminUid = "";
 	private  GoogleSignInOptions gop;
 	private double index = 0;
 	private double length = 0;
@@ -667,6 +668,7 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 			@Override
 			public void onDataChange(DataSnapshot _dataSnapshot) {
 				getAccountId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+				adminUid = getAccountId;
 				Map<String,Object> AccountInfoMap = (Map<String,Object>) _dataSnapshot.child(getAccountId).getValue();
 				_drawer_name.setText(AccountInfoMap.get("lname").toString().concat(" , ").concat(AccountInfoMap.get("fname").toString().concat(" ").concat(AccountInfoMap.get("mname").toString())));
 				if (AccountInfoMap.containsKey("avatar")) {
@@ -740,6 +742,7 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 	
 	
 	public void _getAllNoReplyMessages () {
+		dbmessage = _firebase.getReference("chatroom");
 		dbmessage.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot _dataSnapshot) {
@@ -755,32 +758,48 @@ public class AdminDashboardActivity extends  AppCompatActivity  {
 					_e.printStackTrace();
 				}
 				index = 0;
-				NoReplyMessagesCount = 0;
+				NoReplyMessagesCount = AllMessagesLM.size();
+				AllMessagesFromUserLm.clear();
+				Log.d("av","_getAllNoReplyMessages: NoReplyMessagesCount=" + String.valueOf(NoReplyMessagesCount));
 				length = AllMessagesLM.size();
-//				for(int _repeat17 = 0; _repeat17 < (int)(length); _repeat17++) {
-//					SketchwareUtil.getAllKeysFromMap(AllMessagesLM.get((int)(index)), AllMessagesStr);
-//					index1 = 0;
-//					length1 = AllMessagesStr.size();
-//					for(int _repeat26 = 0; _repeat26 < (int)(length1); _repeat26++) {
-//						AllMessagesFromUserLm.add((HashMap<String,Object>)AllMessagesLM.get((int)(index)).get(AllMessagesStr.get((int)(index1))));
-//						index1++;
-//					}
-//					index++;
-//				}
+				for(int _repeat17 = 0; _repeat17 < (int)(length); _repeat17++) {
+					SketchwareUtil.getAllKeysFromMap(AllMessagesLM.get((int)(index)), AllMessagesStr);
+					Log.d("av","_getAllNoReplyMessages: AllMessagesStr.size()=" + String.valueOf(AllMessagesStr.size()));
+					index1 = 0;
+					length1 = AllMessagesStr.size();
+					for(int _repeat26 = 0; _repeat26 < (int)(length1); _repeat26++) {
+
+
+						AllMessagesFromUserLm.add(AllMessagesLM.get((int)(index)));
+						//Log.d("av","_getAllNoReplyMessages: AllMessagesFromUserLm.get((int)index).get(\"userid\")=" + String.valueOf(AllMessagesFromUserLm.get((int)index).get("userid").toString()));
+						index1++;
+					}
+					index++;
+				}
+
 				index3 = 0;
-				NoReplyMessagesCount = 0;
+				//NoReplyMessagesCount = 0; //AllMessagesFromUserLm.size();
+				Log.d("av","_getAllNoReplyMessages: NoReplyMessagesCount=" + String.valueOf(NoReplyMessagesCount));
 				length3 = AllMessagesFromUserLm.size();
 				for(int _repeat66 = 0; _repeat66 < (int)(length3); _repeat66++) {
-					if (AllMessagesFromUserLm.get((int)index3).get("noreply").toString().equals("true") && !AllMessagesFromUserLm.get((int)index3).get("userid").toString().equals("admin")) {
-						NoReplyMessagesCount++;
-					}
-					index3++;
+					//Log.d("av","_getAllNoReplyMessages: AllMessagesFromUserLm.get((int)index3).get(\"noreply\") " + String.valueOf(AllMessagesFromUserLm.get((int)index3).get("noreply").toString()));
+					//Log.d("av","_getAllNoReplyMessages: AllMessagesFromUserLm.get((int)index3).get(\"userid\") " + String.valueOf(AllMessagesFromUserLm.get((int)index3).get("userid").toString()));
+
+					//if (AllMessagesFromUserLm.get((int)index3).get("noreply").toString().equals("true") && !AllMessagesFromUserLm.get((int)index3).get("userid").toString().equals("admin")) {
+						//NoReplyMessagesCount++;
+					//}
+					//else {
+						//NoReplyMessagesCount--;
+						//Log.d("av","_getAllNoReplyMessages: NoReplyMessagesCount--");
+					//}
 				}
+				Log.d("av","_getAllNoReplyMessages: NoReplyMessagesCount=" + String.valueOf(NoReplyMessagesCount));
+
 				if (NoReplyMessagesCount > 9) {
 					_drawer_lbNoReplyMessagesCount.setText("9+");
 				}
 				else {
-					_drawer_lbNoReplyMessagesCount.setText(String.valueOf((long)(NoReplyMessagesCount - 1)));
+					_drawer_lbNoReplyMessagesCount.setText(String.valueOf((long)(NoReplyMessagesCount)));
 				}
 			}
 			@Override
